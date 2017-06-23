@@ -1,0 +1,6 @@
+create table member (
+  memberid varchar(50) PRIMARY key,
+  name varchar(50) NOT NULL,
+  password varchar(50) NOT NULL,
+  regdate date not null
+);
