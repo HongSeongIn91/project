@@ -1,0 +1,59 @@
+1. 파일 준비하기
+ojdbc6.jar, tomcat-dbcp.jar 파일을 [WebContent] - [WEB-INF] - [lib] 폴더에 붙여넣는다.
+
+2. DBCP 정보 설정 - server.xml 
+[Servers] - [Tomcat v8.0 Server at localhost-config] 폴더 안의 server.xml 파일을 연다.
+<GlobalNamingResources> 태그 사이에 다음의 소스코드를 추가한다.
+
+<Resource 
+auth="Container" 
+driverClassName="oracle.jdbc.driver.OracleDriver" 
+loginTimeout="10" 
+maxActive="50" 
+maxWait="5000" 
+name="jdbc/xe" (xe는 SID의 기본값)
+password="tiger" (접속할 DB의 비밀번호)
+testOnBorrow="true" 
+type="javax.sql.DataSource" 
+url="jdbc:oracle:thin:@127.0.0.1:1521:xe" 
+username="jspexam" (접속할 DB의 이름)
+/>
+
+3. context.xml 파일 수정
+[Servers] 폴더 내의 context.xml 파일을 복사하여 자신의 웹 프로젝트의 [WebContent] - [META-INF] 폴더에 붙여넣는다.
+[META-INF] 폴더 내의 context.xml 파일을 열고 다음의 소스코드를 추가한다.
+
+<ResourceLink global="jdbc/xe" name="jdbc/xe" type="javax.sql.DataSource"/>
+
+global과 name은 server.xml의 <Resource> 내에 있는 name과 똑같아야 한다.
+
+4. DBConnection.java - JNDI를 바탕으로 DB연결을 담당하는 클래스.
+
+package Connection;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+public class DBConnection {
+
+  public static Connection getConnection() throws NamingException, SQLException, ClassNotFoundException {
+    Context initCtx = new InitialContext();
+
+    // initCtx의 lookup메서드를 이용해서 "java:comp/env" 에 해당하는 객체를 찾아서 evnCtx에 삽입
+    Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+    // initCtx의 lookup메서드를 이용해서 "jdbc/xe" 에 해당하는 객체를 찾아서 ds에 삽입
+    DataSource ds = (DataSource) envCtx.lookup("jdbc/xe");
+
+    // getConnection메서드를 이용해서 커넥션 풀로부터 커넥션 객체를 얻어내어 conn변수에 저장.
+    Connection conn = ds.getConnection();
+    return conn;
+  }
+}
+
+envCtx.lookup("jdbc/xe")는 context.xml의 <ResourceLink>에 있는 name과 똑같아야 한다.
