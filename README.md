@@ -9,3 +9,6 @@ http://magento2.tistory.com/entry/%EA%B9%83%ED%97%88%EB%B8%8CGitHub-%EA%B0%80%EC
 
 4. 풀 리퀘스트를 합치기
 http://magento2.tistory.com/entry/%EA%B9%83%ED%97%88%EB%B8%8CGitHub-%EA%B0%80%EC%9D%B4%EB%93%9C-5%EB%8B%A8%EA%B3%84-%ED%92%80%EB%A6%AC%ED%80%98%EC%8A%A4%ED%8A%B8%EB%A5%BC-%ED%95%A9%EC%B9%98%EA%B8%B0
+
+5. 개요도
+https://prezi.com/view/lo8F6YNiE6c6b2iPOsuh/
