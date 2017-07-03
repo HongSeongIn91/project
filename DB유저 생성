@@ -1,0 +1,5 @@
+시작 > cmd > sqlplus "/as sysdba
+CREATE USER C201702 identified BY tiger;
+GRANT dba to C201702;
+
+소스코드에 기존에 jspexam 으로 되어있는 부분을 C201702 로 수정하여야 합니다.
