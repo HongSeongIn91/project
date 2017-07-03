@@ -1,0 +1,7 @@
+-- 기대평 PREVIEW  테이블 인서트 
+
+insert into PREVIEW values(1, 6, 'AAA', SYSDATE, '홈커밍이라 보고잡다 ' );
+insert into PREVIEW values(2, 7, 'BBB', SYSDATE, '재꽃 기대된다 ' );
+insert into PREVIEW values(3, 8, 'CCC', SYSDATE, '그 후 어떤 그후? ' );
+insert into PREVIEW values(4, 9, 'DDD', SYSDATE, '베를린 하면 한석규가 떠오르는데...' );
+insert into PREVIEW values(5, 10, 'EEE', SYSDATE, '내 사랑을 얘기해 볼까 ' );
