@@ -33,12 +33,12 @@ public class JoinService {
 			// joinReq를 이용해서 Member 객체를 생성하고, memberDao.insert를 실행해서 회원 데이터를 테이블에 삽입
 			memberDao.insert(conn, 
 					new Member(
-							joinReq.getM_id(), 
-							joinReq.getM_pw(), 
-							joinReq.getM_regnum(),
-							joinReq.getM_email(),
-							joinReq.getM_phone(),
-							new Date())
+						joinReq.getM_id(), 
+						joinReq.getM_pw(), 
+						joinReq.getM_regnum(),
+						joinReq.getM_email(),
+						joinReq.getM_phone(),
+						new Date())
 					);
 			// 트랜잭션 커밋
 			conn.commit();
