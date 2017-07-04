@@ -11,7 +11,8 @@
 <form action="modify.do" method="post">
 <p>
   번호:<br/>${modReq.articleNumber}
-</p>
+<input type="hidden" name="articleNumber" value="${modReq.articleNumber}">
+    </p>
 <p>
   제목:<br/><input type="text" name="title" value="${modReq.title}">
   <c:if test="${errors.title}">제목을 입력하세요.</c:if>
