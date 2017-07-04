@@ -40,17 +40,12 @@ public class ModifyArticleHandler implements CommandHandler {
   private String processSubmit(HttpServletRequest req, HttpServletResponse res) throws ClassNotFoundException, NamingException, IOException {
     // 현재 로그인한 사용자 정보를 구한다.
     User authUser = (User)req.getSession().getAttribute("authUser");
-    String noVal = req.getParameter("no");
-    int no = 1;
-    if(noVal != null) {
-      System.out.println(noVal);
-      no = Integer.parseInt(noVal);
-      System.out.println(no);
-    }
+    String noVal = req.getParameter("articleNumber");
+    int no = Integer.parseInt(req.getParameter("noVal"));
     /*System.out.println(noVal);
     int no = Integer.parseInt(noVal);
     System.out.println(no);*/
-    /*int no = Integer.parseInt(req.getParameter("no"));*/
+   
 
     // 요청 파라미터와 현재 사용자 정보를 이용해서 ModifyRequest 객체를 생성한다.
     ModifyRequest modReq = new ModifyRequest(authUser.getId(), no, req.getParameter("title"), req.getParameter("content"));
