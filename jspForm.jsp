@@ -85,11 +85,13 @@
 		<tr>
 		<th>핸드폰 번호</th>
 		
-		<td>
-		<input type="text" class="tel" name="m_phone1" size="3"  maxlength="3" value="${param.m_phone}" />
-				-<input type="text" class="tel" name="m_phone2" size="4" maxlength="4" >
-				-<input type="text" class="tel" name="m_phone3" size="4" maxlength="4" >
-				
+		<td><select name="m_phone" >  
+				<option value="010">010</option>
+				<option value="011">011</option>
+				<option value="016">016</option>
+				<option value="018">019</option>
+		</select>-<input type="text" name="midnum" size="4" maxlength="4"  value="${param.m_phone}"/>
+				      -<input type="text" name="endnum" size="4" maxlength="4" />
 				<c:if test="${errors.m_phone}"> 핸드폰 입력하세요.</c:if>
 		</td>
 		</tr>
