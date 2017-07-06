@@ -1,0 +1,249 @@
+﻿DROP TABLE REVIEW_REPLY;
+DROP TABLE REVIEW_CONTENT;
+DROP TABLE REVIEW;
+DROP TABLE PREVIEW;
+DROP TABLE MOVIE_INFO;
+DROP TABLE MEMBER;
+
+DROP SEQUENCE MOVIE_INFO_SEQUENCE;
+DROP SEQUENCE PREVIEW_SEQUENCE;
+DROP SEQUENCE REVIEW_SEQUENCE;
+DROP SEQUENCE REVIEW_REPLY_SEQUENCE;
+
+-- 회원정보
+CREATE TABLE MEMBER (
+    M_ID VARCHAR2(16) PRIMARY KEY,
+    M_PW VARCHAR2(16) NOT NULL,
+    M_BIRTH VARCHAR2(8) NOT NULL,
+    M_GENDER VARCHAR2(5) NOT NULL,
+    M_EMAIL VARCHAR2(30) NOT NULL UNIQUE,
+    M_PHONE VARCHAR2(13) NOT NULL,
+    M_REGDATE DATE DEFAULT SYSDATE NOT NULL
+    );
+   
+-- 영화정보
+CREATE TABLE MOVIE_INFO (
+    MV_NUM NUMBER PRIMARY KEY,
+    MV_TITLE VARCHAR2(200) NOT NULL,
+    MV_SUMMARY VARCHAR2(3000) NOT NULL,
+    MV_RELDATE DATE NOT NULL,
+    MV_TIME VARCHAR2(10) NOT NULL,
+    MV_RATING VARCHAR2(30) NOT NULL,
+    MV_DIRECTOR VARCHAR2(50) NOT NULL,
+    MV_ACTOR VARCHAR2(100) NOT NULL,
+    MV_READCNT NUMBER DEFAULT 0 NOT NULL
+    );
+
+-- 기대평
+CREATE TABLE PREVIEW (
+    PRE_NUM NUMBER PRIMARY KEY,
+    PRE_MV_NUM NUMBER,
+    PRE_M_ID VARCHAR2(16),
+    PRE_REGDATE DATE DEFAULT SYSDATE NOT NULL,
+    PRE_CONTENT VARCHAR2(420) NOT NULL,
+    CONSTRAINT FK_PRE_MV_NUM FOREIGN KEY(PRE_MV_NUM) REFERENCES MOVIE_INFO(MV_NUM),
+    CONSTRAINT FK_PRE_M_ID FOREIGN KEY(PRE_M_ID) REFERENCES MEMBER(M_ID)
+    );
+
+-- 감상평
+CREATE TABLE REVIEW (
+    RV_NUM NUMBER PRIMARY KEY,
+    RV_MV_NUM NUMBER,
+    RV_M_ID VARCHAR2(16),
+    RV_REGDATE DATE DEFAULT SYSDATE NOT NULL,
+    RV_TITLE VARCHAR2(300) NOT NULL,
+    RV_READCNT NUMBER DEFAULT 0 NOT NULL,
+    CONSTRAINT FK_RV_MV_NUM FOREIGN KEY(RV_MV_NUM) REFERENCES MOVIE_INFO(MV_NUM),
+    CONSTRAINT FK_RV_M_ID FOREIGN KEY(RV_M_ID) REFERENCES MEMBER(M_ID)
+    );
+    
+-- 감상평_내용
+CREATE TABLE REVIEW_CONTENT (
+    RVC_RV_NUM NUMBER PRIMARY KEY,
+    RVC_CONTENT CLOB NOT NULL,
+    CONSTRAINT FK_RV_NUM FOREIGN KEY(RVC_RV_NUM) REFERENCES REVIEW(RV_NUM)
+    );
+
+-- 댓글
+CREATE TABLE REVIEW_REPLY (
+    RP_NUM NUMBER PRIMARY KEY,
+    RP_RV_NUM NUMBER,
+    RP_M_ID VARCHAR2(16),
+    RP_REGDATE DATE DEFAULT SYSDATE NOT NULL,
+    RP_CONTENT VARCHAR2(900) NOT NULL,
+    CONSTRAINT FK_RP_RV_NUM FOREIGN KEY(RP_RV_NUM) REFERENCES REVIEW(RV_NUM),
+    CONSTRAINT FK_RP_M_ID FOREIGN KEY(RP_M_ID) REFERENCES MEMBER(M_ID)
+    );
+
+CREATE SEQUENCE MOVIE_INFO_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+CREATE SEQUENCE PREVIEW_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+CREATE SEQUENCE REVIEW_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+CREATE SEQUENCE REVIEW_REPLY_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+
+--TABLE MEMBER 회원정보 인서트
+
+INSERT INTO MEMBER VALUES('AAA', '1111', '19910208', 'man', 'aaa@a.com', '010-1111-2222', SYSDATE);
+INSERT INTO MEMBER VALUES('BBB', '2222', '19970621', 'man', 'BBB@a.com', '010-3333-4444', SYSDATE);
+INSERT INTO MEMBER VALUES('CCC', '3333', '19880113', 'man','CC@n.com', '010-5555-6666', SYSDATE);
+INSERT INTO MEMBER VALUES('DDD', '4444', '19940218', 'man','DDD@a.com', '010-7777-8888', SYSDATE);
+INSERT INTO MEMBER VALUES('EEE', '5555', '19850817', 'man','EEE@b.com', '010-9999-8899', SYSDATE);
+INSERT INTO MEMBER VALUES('FFF', '6666', '19950921', 'woman','FF@a.com', '010-1234-5678', SYSDATE);
+INSERT INTO MEMBER VALUES('GGG', '7777', '19821207', 'woman','GG@n.com', '010-1212-3434', SYSDATE);
+INSERT INTO MEMBER VALUES('HHH', '8888', '19040718', 'woman','HHHH@b.com', '010-4545-5656', SYSDATE);
+INSERT INTO MEMBER VALUES('III', '9999', '19850505', 'woman','III@a.com', '010-2323-3434', SYSDATE);
+INSERT INTO MEMBER VALUES('JJJ', '1122', '19931101', 'woman','JJJ@a.com', '010-7878-7878', SYSDATE);
+COMMIT;
+
+-- TABLE MOVIE_INFO 영화정보 인서트
+
+insert all 
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('1', '박열',
+              '"조선인에게는 영웅, 우리한텐 원수로 적당한 놈을 찾아."
+              1923년, 관동대지진 이후 퍼진 괴소문으로 6천여 명의 무고한 조선인이 학살된다.
+                사건을 은폐하기 위해, 관심을 돌릴 화젯거리가 필요했던 일본내각은 
+               불령사를 조직해 항일운동을 하던 조선 청년 박열을 대역사건의 배후로 지목한다.
+               "그들이 원하는 영웅이 돼줘야지"
+               일본의 계략을 눈치챈 박열은 동지이자 연인인 가네코 후미코와 함께 
+               일본 황태자 폭탄 암살 계획을 자백하고,
+               사형까지 무릅쓴 역사적인 재판을 시작하는데....  
+               조선인 최초의 대역죄인! 
+               말 안 듣는 조선인 중 가장 말 안 듣는 조선인! 
+               역사상 가장 버릇없는 피고인! 
+               일본 열도를 발칵 뒤집은 사상 초유의 스캔들! 그 중심에 박열이 있었다!',
+               '2017-06-28', '129분', '12세 관람가', '이준익', '이제훈, 최희서' ,0)
+ 
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('2','트랜스포머: 최후의 기사',
+            '두 세상의 충돌, 하나만 살아남는다!
+            옵티머스 프라임은 더 이상 인간의 편이 아니다. 
+            트랜스포머의 고향 사이버트론의 재건을 위해 지구에 있는 고대 유물을 찾아나선 옵티머스 프라임은 인류와 피할 수 없는 갈등을 빚고, 오랜 동료 범블비와도 치명적인 대결을 해야만 하는데… 
+            영원한 영웅은 없다!
+            하나의 세상이 존재하기 위해선 다른 세상이 멸망해야 한다!',
+            '2017-06-21', '151분', '12세 관람가', '마이클 베이', '마크 월버그,  안소니 홉킨스, 로라 하드독',0)
+
+
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('3','리얼',
+            '아시아 최대 규모의 카지노를 둘러싼 거대한 음모와 전쟁
+            "나와 똑같이 생긴 놈이 나타났다"
+            카지노 시에스타 오픈을 앞둔 조직의 보스 장태영(김수현) 앞에
+            암흑가 대부 조원근(성동일)이 카지노의 소유권을 주장하며 나타난다.
+            조원근의 개입으로 카지노를 빼앗길 위기에 처한 장태영은
+            자금 문제를 해결하기 위해 투자자를 찾아 나선다. 
+            어느 날, 이름뿐만 아니라 생김새마저 똑같은 의문의 투자자(김수현)가 나타나
+            자금은 물론 조원근까지 해결해주겠다는 제안을 한다.
+            의문의 투자자의 등장으로 조원근과 카지노를 차지하기 위한 전쟁이 시작되고
+            이들을 둘러 싼 거대한 비밀과 음모의 정체가 서서히 드러난다.
+            오직 진짜만이 모든 것을 갖는다!',
+            '2017-06-28','137분','청소년 관람불가', '이사랑','김수현, 이성민, 성동일',0)
+
+into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('4','옥자',
+            '우린 집으로 갈거야, 반드시 함께
+            강원도 산골 소녀 미자(안서현)에게 옥자는 10년 간 함께 자란 둘도 없는 친구이자 소중한 가족이다. 
+            자연 속에서 평화롭게 지내던 어느 날, 글로벌 기업 미란도가 나타나 갑자기 옥자를 뉴욕으로 끌고가고, 
+            할아버지(변희봉)의 만류에도 미자는 무작정 옥자를 구하기 위해 위험천만한 여정에 나선다.
+            극비리에 옥자를 활용한 슈퍼돼지 프로젝트를 추진 중인 미란도 코퍼레이션의 CEO 루시 미란도(틸다 스윈튼), 
+            옥자를 이용해 제2의 전성기를 꿈꾸는 동물학자 죠니(제이크 질렌할), 옥자를 앞세워 또 다른 작전을 수행하려는 비밀 동물 보호 단체 ALF까지. 
+            각자의 이권을 둘러싸고 옥자를 차지하려는 탐욕스러운 세상에 맞서, 옥자를 구출하려는 미자의 여정은 더욱 험난해져 간다.',
+            '2017-06-29','120분','12세 관람가','봉준호','틸다 스윈튼, 폴 다노, 제이크 질렌할', 0)
+            
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('5','미이라',
+            '신들과 괴물들의 세상,절대적 존재가 깨어난다!
+            사막 한 가운데, 고대 이집트 미이라의 무덤을 발견한 닉(톰 크루즈)은 미이라의 관을 수송하던 중 의문의 비행기 추락사고로 사망한다. 그러나 죽음에서 다시 깨어난 닉!
+            그는 자신이 발견한 미이라 무덤이 강력한 힘을 갈구한 잘못된 욕망으로 인해 산 채로 봉인 당해야 했던 아마네트 공주의 것이며, 자신이 부활하게 된 비밀이 이로부터 시작됨을 감지한다. 
+            한편, 수천 년 만에 잠에서 깨어난 아마네트는 분노와 파괴의 강력한 힘으로 전 세상을 자신의 것으로 만들려 하고, 지킬 박사(러셀 크로우)는 닉에게 의미심장한 이야기를 전하게 되는데... 
+            건드려선 안 될 강력한 존재와 이에 맞선 무한의 힘
+            마침내 세상을 구할 숙명적인 전쟁이 시작된다!',
+            '2017-06-06','110분','15세 관람가', '알렉스 커츠만','톰 크루즈, 소피아 부텔라, 애나벨 월리스',0)
+            
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('6','스파이더맨: 홈커밍',
+            '마블 히어로의 세대교체!
+            “어벤져스가 되려면 시험 같은 거 봐요?”
+            ‘시빌 워’ 당시 ‘토니 스타크’(로버트 다우니 주니어)에게 발탁되어 
+            대단한 활약을 펼쳤던 스파이더맨 ‘피터 파커’(톰 홀랜드).
+            그에게 새로운 수트를 선물한 ‘토니 스타크’는 위험한 일은 하지 말라며 조언한다. 
+            하지만 허세와 정의감으로 똘똘 뭉친 ‘피터 파커’는 세상을 위협하는 강력한 적 ‘벌처’(마이클 키튼)에 맞서려 하는데… 
+            
+            아직은 어벤져스가 될 수 없는 스파이더맨 
+            숙제보다 세상을 구하고 싶은 스파이더맨 
+            그는 과연 진정한 히어로로 거듭날 수 있을 것인가!',
+            '2017-07-05', '133분', '12세 관람가','존 왓츠', '톰 홀랜드, 로버트 다우니 주니어', 0)
+            
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('7','재꽃',
+            '아스팔트의 깨어진 틈새마다 자라나는 들풀처럼
+            그렇게 한 아이가 온다.
+            한적한 시골 마을에서 평범한 삶을 보내고 있는 하담(정하담)에게 
+            한 번도 만나본 적 없는 아빠를 찾겠다며 자신과 꼭 닮은 열한 살 소녀, 해별(장해금)이 찾아온다 . 
+            고요했던 마을은 해별의 등장과 함께 복잡미묘한 감정들이 소용돌이 치게 되는데…',
+            '2017-07-06','125분','12세 관람가','박석영', '정하담, 장해금, 정은경',0)
+
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('8','그 후',
+            '첫 출근날, 아름은 사장인 봉완의 헤어진 여자 자리에서 일하게 된다.
+            사랑의 노트가 발견되고, 봉완의 처가 회사로 찾아 오고, 아름은 헤어진 여자로 오해를 받는다.
+            결국 아름은 그날 회사를 그만 둘 수 밖에 없게 되는데…',
+            '2017-07-06','91분','청소년 관람불가','홍상수','권해효',0)
+
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('9','베를린 신드롬',
+            '영감을 얻기 위해 베를린으로 온 호주의 사진작가 클레어 (테레사 팔머). 
+            그 곳에 살고 있는 매력적인 남자 앤디 (막스 리멜트)를 만나 열정적인 하룻밤을 보낸다. 
+            하지만 다음 날 앤디가 출근한 뒤 빈집에 홀로 남은 클레어는 
+            베를린의 외딴 아파트에 감금되었다는 사실을 알게 되는데..! 
+            빠져나오려 할수록 더욱 옥죄어 오는 앤디! ',
+            '2017-07-06','116분','청소년 관람불가', '케이트 쇼트랜드','테레사 팔머, 막스 리멜트',0)
+
+
+into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt)
+values('10','내 사랑',
+            '“당신의 마지막 인생 로맨스는 언제였나요?
+            운명처럼 세상에서 가장 작은집에서 만난 에버렛과 모드. 
+            혼자인 게 익숙했던 이들은 서서히 서로에게 물들어가며 깊은 사랑을 하게 되고 서로의 사랑을 풍경처럼 담는다.',
+            '2017-07-12','115분','12세 관람가','에이슬링 월쉬','에단 호크, 샐리 호킨스',0)  
+   
+select * from dual;
+
+
+-- TABLE PREVIEW 기대평 인서트
+
+insert into PREVIEW values
+(1, 6, 'AAA', SYSDATE, '홈커밍이라 보고잡다 ' );
+insert into PREVIEW values
+(2, 7, 'BBB', SYSDATE, '재꽃 기대된다 ' );
+insert into PREVIEW values
+(3, 8, 'CCC', SYSDATE, '그 후 어떤 그후? ' );
+insert into PREVIEW values
+(4, 9, 'DDD', SYSDATE, '베를린 하면 한석규가 떠오르는데...' );
+insert into PREVIEW values
+(5, 10, 'EEE', SYSDATE, '내 사랑을 얘기해 볼까 ' );
+
+COMMIT;
