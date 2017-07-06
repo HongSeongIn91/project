@@ -4,41 +4,63 @@ import java.util.Date;
 
 public class Member {
 
-	private String id;
-	private String name;
-	private String password;
-	private Date regDate;
+	private String m_id;
+	private String m_pw;
+	private String m_regnum;
+	private String m_email;
+	private String m_phone;
+	private Date m_regDate;
 	
-	public Member(String id, String name, String password, Date regDate) {
-		this.id=id;
-		this.name=name;
-		this.password=password;
-		this.regDate=regDate;
+	public Member(String m_id, String m_pw, String m_regnum, String m_email, String m_phone, Date m_regDate) {
+		this.m_id=m_id;
+		this.m_pw=m_pw;
+		this.m_regnum=m_regnum;
+		this.m_email = m_email;
+		this.m_phone = m_phone;
+		this.m_regDate=m_regDate;
 	}
 	
-	public String getId() {
-		return id;
+	public String getM_id() {
+		return m_id;
 	}
-	
-	public String getName() {
-		return name;
+
+	public String getM_pw() {
+		return m_pw;
 	}
-	
-	public String getPassword() {
-		return password;
+
+	public String getM_regnum() {
+		return m_regnum;
 	}
-	
-	public Date getRegDate() {
-		return regDate;
+
+	public String getM_email() {
+		return m_email;
 	}
-	
+
+	public String getM_phone() {
+		return m_phone;
+	}
+
+	public Date getM_regDate() {
+		return m_regDate;
+	}
+
 	public boolean matchPassword(String pwd) {
-		return password.equals(pwd);
+		return m_pw.equals(pwd);
 	}
 	
-  // 암호 변경 기능 구현할 때 사용
+  // 회원정보 변경 기능 구현할 때 사용
 	public void changePassword(String newPwd) {
-		this.password = newPwd;
+		this.m_pw = newPwd;
+	}
+
+	public void changeEmail(String newEmail) {
+
+		this.m_email = newEmail;
+	}
+
+	public void changePhone(String newPhone) {
+
+		this.m_phone = newPhone;
 	}
 	
 }
