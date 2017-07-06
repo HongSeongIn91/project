@@ -12,3 +12,6 @@ http://magento2.tistory.com/entry/%EA%B9%83%ED%97%88%EB%B8%8CGitHub-%EA%B0%80%EC
 
 5. 개요도
 https://prezi.com/view/lo8F6YNiE6c6b2iPOsuh/
+
+6. CSS 참고사이트
+http://getbootstrap.com/2.3.2/
