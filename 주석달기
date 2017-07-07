@@ -1,0 +1,438 @@
+1. JoinHandler
+
+package member.command;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import member.service.DuplicateIdException;
+import member.service.JoinRequest;
+import member.service.JoinService;
+import mvc.command.CommandHandler;
+
+public class JoinHandler implements CommandHandler {
+
+	// FORM_VIEW는 사용자로부터 데이터를 POST방식으로 입력받기 위한 VIEW이다. 입력받은 데이터는 processSubmit() 메서드를 수행하는 데에 사용된다.
+	private static final String FORM_VIEW = "/WEB-INF/view/joinForm.jsp";
+	private JoinService joinService = new JoinService();
+	
+	@Override
+	// request 요청방식이 GET방식이면 processForm을 실행, POST방식이면 processSubmit을 실행
+	public String process(HttpServletRequest req, HttpServletResponse res)
+			throws Exception {
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			return processForm(req, res);
+		} else if(req.getMethod().equalsIgnoreCase("POST")) {
+			return processSubmit(req, res);
+		} else {
+			res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			return null;
+		}
+	}
+	
+	// processSubmit() >> JoinService.java를 호출 >> joinSuccess.jsp와 연결 (에러혹은 exception시 FORM_VIEW)    
+	private String processSubmit(HttpServletRequest req, HttpServletResponse res) throws ClassNotFoundException, NamingException {
+		// JoinRequest 객체를 만들어서 req 내의 파라미터 값들을 저장한다.
+		JoinRequest joinReq = new JoinRequest();
+		joinReq.setM_id(req.getParameter("m_id"));
+		joinReq.setM_pw(req.getParameter("m_pw"));
+		joinReq.setM_regnum(req.getParameter("m_regnum"));
+		joinReq.setM_email(req.getParameter("m_email"));
+		joinReq.setM_phone(req.getParameter("m_phone"));
+		joinReq.setConfirmPassword(req.getParameter("confirmPassword"));
+		
+		// 데이터 타입이 Map인 errors 객체를 만들고, *.jsp에서 사용하기 위해 request 기본객체(req)에 errors 이름으로 속성을 세팅한다.(.setAttribute)
+		Map<String, Boolean> errors = new HashMap<String, Boolean>();
+		req.setAttribute("errors", errors);
+		
+		// JoinRequest.java에서 errors 요인 검사.  
+		joinReq.validate(errors);
+		
+		// errors 객체가 비어있지 않다면 FORM_VIEW를 리턴한다. 즉, 문제가 있다는 뜻이다.
+		if(!errors.isEmpty()) {
+			return FORM_VIEW;
+		}
+		
+		// joinService 객체의 join() 메서드를 실행하고 정상적으로 수행될 경우 joinSuccess.jsp를 return한다.
+		try {
+			joinService.join(joinReq);
+			return "/WEB-INF/view/joinSuccess.jsp";
+		// 그렇지 않을 경우 FORM_VIEW를 리턴한다.
+		} catch (DuplicateIdException e) {
+			errors.put("duplicateId", Boolean.TRUE);
+			return FORM_VIEW;
+		}
+		
+	}
+
+	// processForm() >> FORM_VIEW 리턴 (>> "/WEB-INF/view/joinForm.jsp" 으로 이동)
+	private String processForm(HttpServletRequest req, HttpServletResponse res) {
+		
+		return FORM_VIEW;
+	}
+
+}
+
+2. JoinService
+
+package member.service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Date;
+
+import javax.naming.NamingException;
+
+import Connection.DBConnection;
+import member.dao.JdbcUtil;
+import member.dao.MemberDao;
+import member.model.Member;
+
+public class JoinService {
+
+	private static MemberDao memberDao = new MemberDao();
+	
+	// joinReq --> (( MemberDao.java로 이동 --> selectById() + member객체 생성 ))--> 회원 데이터를 insert(데이터삽입)하기 
+	public void join(JoinRequest joinReq) throws ClassNotFoundException, NamingException {
+		Connection conn = null;
+		try {
+			// 커넥션 풀로부퍼 커넥션을 구하고 트랜잭션을 시작.
+			conn = DBConnection.getConnection();
+			conn.setAutoCommit(false);
+			
+			// MemberDao.selectById()를 이용해서 joinReq.getM_id()에 해당하는 회원 데이터를 구하여 member 객체에 저장한다.
+			Member member = memberDao.selectById(conn, joinReq.getM_id());
+			// 만약 ID에 해당하는 데이터가 이미 존재하면, 트랜잭션을 롤백하고 DuplicateIdException을 발생시킨다.
+			if(member != null) {
+				JdbcUtil.rollback(conn);
+				throw new DuplicateIdException();
+			}
+			
+			// joinReq를 이용해서 Member 객체를 생성하고, memberDao.insert()를 실행해서 회원 데이터를 MEMBER 테이블에 삽입한다.
+			memberDao.insert(conn, 
+					new Member(
+						joinReq.getM_id(), 
+						joinReq.getM_pw(), 
+						joinReq.getM_regnum(),
+						joinReq.getM_email(),
+						joinReq.getM_phone(),
+						new Date())
+					);
+			// 트랜잭션 커밋
+			conn.commit();
+			
+			// 처리 도중 SQLException이 발생하면 트랜잭션을 롤백하고, RuntimeException을 발생시킨다.
+		} catch (SQLException e) {
+			JdbcUtil.rollback(conn);
+			throw new RuntimeException(e);
+		} finally {
+			JdbcUtil.close(conn);
+		}
+	}
+}
+
+3. MemberDao
+
+package member.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
+
+import member.model.Member;
+
+public class MemberDao {
+
+		// id 데이터 존재 시 -->  SQL MEMBER 테이블에서 특정 m_id의 모든 값을(*)가져와 member에 저장(= return member;) 
+	  public Member selectById(Connection conn, String id) throws SQLException {
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
+		    try {
+		      // member 테이블에서 m_id 칼럼 값이 id 파라미터와 동일한 데이터를 조회한다.
+		      pstmt = conn.prepareStatement("select * from member where m_id=?");
+		      pstmt.setString(1, id);
+		      rs = pstmt.executeQuery();
+		      Member member = null;
+		      // 데이터가 존재하면 member 객체를 생성하고 조회된 값을 저장한다.
+		      if(rs.next()){
+		        member = new Member(
+		            rs.getString("m_id"),
+		            rs.getString("m_pw"),
+		            rs.getString("m_regnum"),
+		            rs.getString("m_email"),
+		            rs.getString("m_phone"),
+		            toDate(rs.getTimestamp("m_regdate"))
+		            );
+		      }
+		      return member;
+		    } finally {
+		      JdbcUtil.close(rs);
+		      JdbcUtil.close(pstmt);
+		    }
+		  }
+
+	private static Date toDate(Timestamp date) {
+		return date == null ? null : new Date(date.getTime());
+	}
+
+	// mem 파라미터를 이용하여 INSERT문을 완성하고(pstmt.set*) 실행한다(pstmt.executeUpdate()).
+	public void insert(Connection conn, Member mem) throws SQLException {
+		try (PreparedStatement pstmt =
+				conn.prepareStatement("insert into member values(?,?,?,?,?,?)")) {
+			pstmt.setString(1, mem.getM_id());
+			pstmt.setString(2, mem.getM_pw());
+			pstmt.setString(3, mem.getM_regnum());
+			pstmt.setString(4, mem.getM_email());
+			pstmt.setString(5, mem.getM_phone());
+			pstmt.setTimestamp(6, new Timestamp(mem.getM_regDate().getTime()));
+			pstmt.executeUpdate();
+		}
+	}
+	
+	public static void update(Connection conn, Member member) throws SQLException {
+		try (PreparedStatement pstmt = conn.prepareStatement(
+				"update member set m_pw = ?, m_email = ?, m_phone = ? where m_id =?")) {
+			pstmt.setString(1, member.getM_pw());
+			pstmt.setString(2, member.getM_email());
+			pstmt.setString(3, member.getM_phone());
+			pstmt.setString(4, member.getM_id());
+			pstmt.executeUpdate();
+		}
+	}
+
+	public void delete(Connection conn, String m_id) throws SQLException {
+		try (PreparedStatement pstmt = conn.prepareStatement(
+				"delete from member WHERE m_id = ?")) {
+			pstmt.setString(1, m_id);
+			pstmt.executeUpdate();
+		}
+		
+	}
+
+	public Member selectByRegnumEmail(Connection conn, String regnum,
+			String email) throws SQLException {
+		PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+		try { pstmt = conn.prepareStatement(
+				"select * from member WHERE m_regnum = ? AND m_email = ?");
+			pstmt.setString(1, regnum);
+			pstmt.setString(2, email);
+			rs = pstmt.executeQuery();
+			Member member = null;
+			if(rs.next()){
+		        member = new Member(
+		            rs.getString("m_id"),
+		            rs.getString("m_pw"),
+		            rs.getString("m_regnum"),
+		            rs.getString("m_email"),
+		            rs.getString("m_phone"),
+		            toDate(rs.getTimestamp("m_regdate"))
+		            );
+		      }
+		      return member;
+		    } finally {
+		      JdbcUtil.close(rs);
+		      JdbcUtil.close(pstmt);
+		    }
+		
+	}
+
+	public Member selectByIdPhone(Connection conn, String id,
+			String phone) throws SQLException {
+		PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	    	pstmt = conn.prepareStatement(
+	    			"select * from member WHERE m_id=? AND m_phone=?" );
+	    	pstmt.setString(1, id);
+	    	pstmt.setString(2, phone);
+	    	rs = pstmt.executeQuery();
+	    	Member member = null;
+	    	if(rs.next()) {
+	    		member = new Member(
+	    				 rs.getString("m_id"),
+	 		            rs.getString("m_pw"),
+	 		            rs.getString("m_regnum"),
+	 		            rs.getString("m_email"),
+	 		            rs.getString("m_phone"),
+	 		            toDate(rs.getTimestamp("m_regdate"))
+	 		            );	    		
+	    	}	return member;
+	    }	finally {
+		    JdbcUtil.close(rs);
+		    JdbcUtil.close(pstmt);
+	    }
+	}
+}
+
+4. JoinRequest
+
+package member.service;
+
+import java.util.Map;
+
+public class JoinRequest {
+	
+	// 회원 가입 기능을 구현할 때 필요한 요청 데이터를 보관하는 필드.
+	private String m_id;
+	private String m_pw;
+	private String m_regnum;
+	private String m_email;
+	private String m_phone;
+	private String confirmPassword;
+	
+	public String getM_id() {
+		return m_id;
+	}
+
+	public void setM_id(String m_id) {
+		this.m_id = m_id;
+	}
+
+	public String getM_pw() {
+		return m_pw;
+	}
+
+	public void setM_pw(String m_pw) {
+		this.m_pw = m_pw;
+	}
+
+	public String getM_regnum() {
+		return m_regnum;
+	}
+
+	public void setM_regnum(String m_regnum) {
+		this.m_regnum = m_regnum;
+	}
+
+	public String getM_email() {
+		return m_email;
+	}
+
+	public void setM_email(String m_email) {
+		this.m_email = m_email;
+	}
+
+	public String getM_phone() {
+		return m_phone;
+	}
+
+	public void setM_phone(String m_phone) {
+		this.m_phone = m_phone;
+	}
+
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+	
+	// password 필드와 confirmPassword 필드 값이 같은지 검사
+	public boolean isPasswordEqualToConfirm() {
+		return m_pw != null && m_pw.equals(confirmPassword);
+	}
+	
+	// 각 필드의 데이터가 유효한지 검사. 값이 있는지 없는지 검사.
+	// errors 맵 객체는 에러 정보를 담기 위해 사용.
+	public void validate(Map<String, Boolean> errors) {
+		checkEmpty(errors, m_id, "m_id");
+		checkEmpty(errors, m_pw, "m_pw");
+		checkEmpty(errors, m_regnum, "m_regnum");
+		checkEmpty(errors, m_email, "m_email");
+		checkEmpty(errors, m_phone, "m_phone");
+		checkEmpty(errors, confirmPassword, "confirmPassword");
+		if(!errors.containsKey("confirmPassword")) {
+			if(!isPasswordEqualToConfirm()) {
+				errors.put("notMatch", Boolean.TRUE);
+			}
+		}
+		
+	}
+
+	// value가 값이 없는 경우 errors 맵 객체의 fieldName 키에 TRUE를 값으로 추가
+	private void checkEmpty(Map<String, Boolean> errors, String value,
+			String fieldName) {
+		if (value == null || value.isEmpty())
+			errors.put(fieldName, Boolean.TRUE);
+		
+	}
+}
+
+5. Member
+
+package member.model;
+
+import java.util.Date;
+
+public class Member {
+
+	private String m_id;
+	private String m_pw;
+	private String m_regnum;
+	private String m_email;
+	private String m_phone;
+	private Date m_regDate;
+	
+	public Member(String m_id, String m_pw, String m_regnum, String m_email, String m_phone, Date m_regDate) {
+		this.m_id=m_id;
+		this.m_pw=m_pw;
+		this.m_regnum=m_regnum;
+		this.m_email = m_email;
+		this.m_phone = m_phone;
+		this.m_regDate=m_regDate;
+	}
+	
+	public String getM_id() {
+		return m_id;
+	}
+
+	public String getM_pw() {
+		return m_pw;
+	}
+
+	public String getM_regnum() {
+		return m_regnum;
+	}
+
+	public String getM_email() {
+		return m_email;
+	}
+
+	public String getM_phone() {
+		return m_phone;
+	}
+
+	public Date getM_regDate() {
+		return m_regDate;
+	}
+
+	public boolean matchPassword(String pwd) {
+		return m_pw.equals(pwd);
+	}
+	
+  // 회원정보 변경 기능 구현할 때 사용
+	public void changePassword(String newPwd) {
+		this.m_pw = newPwd;
+	}
+
+	public void changeEmail(String newEmail) {
+
+		this.m_email = newEmail;
+	}
+
+	public void changePhone(String newPhone) {
+
+		this.m_phone = newPhone;
+	}
+	
+}
+
