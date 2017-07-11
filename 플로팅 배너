@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+	<head>
+		<title>CSS 레이아웃 - 3단 레이아웃</title>
+		<meta charset="utf-8">
+		<style>
+		
+		/* 떠다니는 메뉴 (Floating Menu) */
+			#floatdiv {
+			    position:fixed; _position:absolute; _z-index:-1;
+			    width:200px;              /* 플로팅 배너 가로폭 조절*/
+			    overflow:hidden;
+			    right:40%;                 /* 플로팅 배너 위치 및 우측으로 부터의 거리 */
+			    top:24%;                   /* 이미지 높이 조절 */
+			    background-color: transparent;
+			    margin-right: -530px;   /* 좌우측 여백 조절 */
+			    padding:0;
+			}
+			
+			#floatdiv ul  { list-style: none; }
+			#floatdiv li  { margin-bottom: 2px; text-align: center; }
+			#floatdiv a   { color: #5D5D5D; border: 0; text-decoration: none; display: block; }
+			#floatdiv a:hover, #floatdiv .menu  { background-color: #5D5D5D; color: #fff; }
+			#floatdiv .menu, #floatdiv .last    { margin-bottom: 0px; }
+		
+			div {
+				padding:20px;
+				border:2px solid #ccc;
+			}
+			#container {
+				width:960px;
+				margin:0 auto;
+			}
+			#header {
+				padding:20px;
+				margin-bottom:20px;
+			}
+			#contents {
+				width: 490px;
+				float: left;
+				margin-bottom: 20px;
+			}
+			#left-sidebar {
+				width: 150px;
+				float: left;
+				margin-bottom: 20px;
+				margin-right: 20px;
+			}
+			#right-sidebar {
+				width: 150px;
+				float: right;
+				margin-bottom: 20px;
+			}
+			#footer {
+				clear:both;			
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<h1 id="top">사이트 제목</h1>
+			</div>
+			<div id="left-sidebar">
+				<h2>사이드바</h2>
+				<ul>
+					<li>항목1</li>
+					<li>항목2</li>
+					<li>항목3</li>
+					<li>항목4</li>
+				</ul>
+			</div>
+			<div id="contents">
+				<h2>본문</h2>
+				<p>예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 
+				   승인을 얻어야 한다. 이 헌법시행 당시의 법령과 조약은 이 헌법에 위배되지 
+				   아니하는 한 그 효력을 지속한다.</p>
+				<p>국가의 세입·세출의 결산, 국가 및 법률이 정한 단체의 회계검사와 행정기관 및 
+				   공무원의 직무에 관한 감찰을 하기 위하여 대통령 소속하에 감사원을 둔다.</p>
+                <p>모든 국민의 재산권은 보장된다. 그 내용과 한계는 법률로 정한다. 대한민국의
+				   국민이 되는 요건은 법률로 정한다. 법률이 헌법에 위반되는 여부가 재판의 
+				   전제가 된 경우에는 법원은 헌법재판소에 제청하여 그 심판에 의하여 재판한다.
+				   </p>
+					<p>원하는 위치에 플로팅 되는 소스 입니다.</p>
+					<p>찾으시는 분들도 있으신듯 하고, 정작 사용하려고하면 불편한 것도 있는듯 하여</p>
+					<p>저도 검색을 통해 해보고 적용해 보니 간단하고 간편하고</p>
+					<p>이미지 배너 뿐만이 아니라 다른 기능을 넣어서도 사용이 가능한듯 하여 활용하시면 좋을듯 합니다.</p>
+					 <p>이미지 대신 다른 메뉴나 기능을 넣어서 다양하게 사용이 가능 합니다.</p>
+					 <br>
+					 <hr>
+					 
+					 <p>원하는 위치에 플로팅 되는 소스 입니다.</p>
+					<p>찾으시는 분들도 있으신듯 하고, 정작 사용하려고하면 불편한 것도 있는듯 하여</p>
+					<p>저도 검색을 통해 해보고 적용해 보니 간단하고 간편하고</p>
+					<p>이미지 배너 뿐만이 아니라 다른 기능을 넣어서도 사용이 가능한듯 하여 활용하시면 좋을듯 합니다.</p>
+					 <p>이미지 대신 다른 메뉴나 기능을 넣어서 다양하게 사용이 가능 합니다.</p>
+					 <br>
+					 <hr>
+					 
+					 <p>원하는 위치에 플로팅 되는 소스 입니다.</p>
+					<p>찾으시는 분들도 있으신듯 하고, 정작 사용하려고하면 불편한 것도 있는듯 하여</p>
+					<p>저도 검색을 통해 해보고 적용해 보니 간단하고 간편하고</p>
+					<p>이미지 배너 뿐만이 아니라 다른 기능을 넣어서도 사용이 가능한듯 하여 활용하시면 좋을듯 합니다.</p>
+					 <p>이미지 대신 다른 메뉴나 기능을 넣어서 다양하게 사용이 가능 합니다.</p>
+					 <br>
+					 <hr>
+					 
+					 <p>원하는 위치에 플로팅 되는 소스 입니다.</p>
+					<p>찾으시는 분들도 있으신듯 하고, 정작 사용하려고하면 불편한 것도 있는듯 하여</p>
+					<p>저도 검색을 통해 해보고 적용해 보니 간단하고 간편하고</p>
+					<p>이미지 배너 뿐만이 아니라 다른 기능을 넣어서도 사용이 가능한듯 하여 활용하시면 좋을듯 합니다.</p>
+					 <p>이미지 대신 다른 메뉴나 기능을 넣어서 다양하게 사용이 가능 합니다.</p>
+					 <br>
+					 <hr>
+					 
+					 <p>원하는 위치에 플로팅 되는 소스 입니다.</p>
+					<p>찾으시는 분들도 있으신듯 하고, 정작 사용하려고하면 불편한 것도 있는듯 하여</p>
+					<p>저도 검색을 통해 해보고 적용해 보니 간단하고 간편하고</p>
+					<p>이미지 배너 뿐만이 아니라 다른 기능을 넣어서도 사용이 가능한듯 하여 활용하시면 좋을듯 합니다.</p>
+					 <p>이미지 대신 다른 메뉴나 기능을 넣어서 다양하게 사용이 가능 합니다.</p>
+					 <br>
+					 <hr>
+					 
+					 <p>원하는 위치에 플로팅 되는 소스 입니다.</p>
+					<p>찾으시는 분들도 있으신듯 하고, 정작 사용하려고하면 불편한 것도 있는듯 하여</p>
+					<p>저도 검색을 통해 해보고 적용해 보니 간단하고 간편하고</p>
+					<p>이미지 배너 뿐만이 아니라 다른 기능을 넣어서도 사용이 가능한듯 하여 활용하시면 좋을듯 합니다.</p>
+					 <p>이미지 대신 다른 메뉴나 기능을 넣어서 다양하게 사용이 가능 합니다.</p>
+					 <br>
+					 <hr>
+					 
+					 <p>원하는 위치에 플로팅 되는 소스 입니다.</p>
+					<p>찾으시는 분들도 있으신듯 하고, 정작 사용하려고하면 불편한 것도 있는듯 하여</p>
+					<p>저도 검색을 통해 해보고 적용해 보니 간단하고 간편하고</p>
+					<p>이미지 배너 뿐만이 아니라 다른 기능을 넣어서도 사용이 가능한듯 하여 활용하시면 좋을듯 합니다.</p>
+					 <p>이미지 대신 다른 메뉴나 기능을 넣어서 다양하게 사용이 가능 합니다.</p>
+					 <br>
+					 <hr>
+			</div>
+			<div id="right-sidebar">
+				<h2>사이드바</h2>
+				<ul>
+					<li>항목1</li>
+					<li>항목2</li>
+					<li>항목3</li>
+					<li>항목4</li>
+				</ul>				
+			</div>
+			<div id="floatdiv" >
+				<h1>플로팅 배너</h1>
+				<ul id="menu">
+					
+					<a href="http://www.google.com" target="_blank">
+					<img src="images/110구글.jpg" /> <strong>클릭시 google로 이동</strong></a>
+					<a href="http://www.naver.com" target="_blank">
+					<img src="images/120muji.jpg" /> <strong>클릭시 naver로 이동</strong></a>
+					<a href="http://www.daum.net" target="_blank">
+					<img src="images/120mong.jpg" /><strong>클릭시 daum으로 이동 </strong></a>
+					
+					<a href="#container" target="_top">   
+					<img src="images/120peach.jpg" /> <strong>탑으로이동(사이트제목 위치로)</strong></a>
+					
+				</ul>
+				</div>
+			<div id="footer">
+				<h2>푸터</h2>
+				<p> 저작권 정보 </p>
+				<p> 연락처 등 </p>
+			</div>
+		</div>
+	</body>
+</html>
