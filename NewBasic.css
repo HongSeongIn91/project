@@ -1,0 +1,172 @@
+﻿/* 오직 변하지 않는 '로고(메인페이지로 이동)+백그라운드 이미지+푸터'만 있는 css */
+
+
+body {
+	background-image : url('../images/background.jpg');
+	font-family:'Nanum Gothic Coding';
+}
+
+@font-face {
+  font-family: 'Jeju Gothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url(//fonts.gstatic.com/ea/jejugothic/v3/JejuGothic-Regular.eot);
+  src: url(//fonts.gstatic.com/ea/jejugothic/v3/JejuGothic-Regular.eot?#iefix) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/jejugothic/v3/JejuGothic-Regular.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/jejugothic/v3/JejuGothic-Regular.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/jejugothic/v3/JejuGothic-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nanum Gothic Coding';
+  font-style: normal;
+  font-weight: 400;
+  src: url(//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.eot);
+  src: url(//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.eot?#iefix) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.ttf) format('truetype');
+}
+
+    #wrapper{
+       width: 100%;
+       margin: 0 auto;
+    }
+    
+        
+    .logo-img {
+    	position:absolute;
+    	padding :15px;
+    	margin-left:42.5%;
+    	width:200px;
+    	height: 110px;
+    	
+    }
+    
+     .go a {
+    	text-decoration:none;
+    	color:white;
+    	font-size:1.0em;  	
+    } 
+     .commonGo{
+     	
+    	display:inline-table;
+    	width:20%;
+    	height:10%;
+    	float:right;
+    	text-align:right;
+    }
+    
+    
+    .join {
+    	display:table-cell;
+    	float:right;
+    	margin:2% 5%;
+    }
+     .login {
+    	display:table-cell;
+    	float:right;
+    	margin:2% 5%;
+    }
+    
+    .logout {	
+   		display:table-cell;
+    	float:right;
+    	margin:2% 5%;
+    }
+    
+    #id{
+    	margin-top:10px;
+    	display:table-cell;
+    	float:left;
+    	color: white;
+    }
+    .QuickMenu {   	
+    	position:relative;
+    	top:160px; 
+    	right:10%;
+    	left:10%;
+    	width:80%;
+    	height:30px;
+    	text-align:center;
+    	
+    }
+    
+    .menu a{
+    	text-decoration:none;
+    	color:white;
+    	font-size:1.4rem;  	
+    }
+    
+    .menu{
+    	display: inline-table;
+	    width: 150px;
+	    height:50px;
+    }
+    
+    .movie{
+    	position:relative;
+    	float:left;
+    	margin-left:15%; 		
+    }
+    .review{
+    	position:relative;
+    	float:left;
+    	margin-left:20%;
+    	margin-right:10%;
+    	
+    }
+    .myPage{
+    	position:relative;
+    	float:right;
+    	margin-right:15%;
+    }  
+      
+    
+    article{
+    	font-family:'Nanum Gothic Coding';
+    	margin-right:15%;
+    	margin-left:15%;
+    }
+    
+    header{
+       font-family:'Jeju Gothic';  
+       background-color:rgba(37,49,75,0.7);     /* rgba(16,42,93,0.7) */
+       width: 100%;
+       height: 200px;
+       margin: 0;     
+       overflow: hidden;
+    }  
+
+    
+    section{
+    	position:static;
+    	font-family:'Nanum Gothic Coding';
+    	box-sizing:border-box;
+        width: 100%;
+        height: 900px;
+        margin : 20px 0px 20px 0px;
+        background-color: hsla(120,0%,0%,0.6);
+        text-align: center;
+        
+    }
+    
+    
+    footer{
+    	font-family:'Nanum Gothic Coding';
+        clear: both;   /* 양쪽 플로팅 해제->기본 상태로*/
+        width: 100%;
+        height: 200px;
+        margin : 0;
+        background-color: rgba(37,49,75,0.7);
+        display:inline-block;
+    }
+    
+    #footer-text{
+    	margin: 50px;
+        color:white;
+    	text-align:left;
+    }
+    
+
+    
