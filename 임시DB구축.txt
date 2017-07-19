@@ -1,0 +1,640 @@
+DROP TABLE REVIEW_REPLY;
+DROP TABLE REVIEW_CONTENT;
+DROP TABLE REVIEW;
+DROP TABLE PREVIEW;
+DROP TABLE MOVIE_INFO;
+DROP TABLE MEMBER;
+DROP SEQUENCE MOVIE_INFO_SEQUENCE;
+DROP SEQUENCE PREVIEW_SEQUENCE;
+DROP SEQUENCE REVIEW_SEQUENCE;
+DROP SEQUENCE REVIEW_REPLY_SEQUENCE;
+
+-- 회원정보
+CREATE TABLE MEMBER (
+    M_ID VARCHAR2(16) PRIMARY KEY,
+    M_PW VARCHAR2(16) NOT NULL,
+    M_BIRTH VARCHAR2(8) NOT NULL,
+    M_GENDER VARCHAR2(6) NOT NULL,
+    M_EMAIL VARCHAR2(30) NOT NULL UNIQUE,
+    M_PHONE VARCHAR2(13) NOT NULL,
+    M_REGDATE DATE DEFAULT SYSDATE NOT NULL
+    );
+   
+-- 영화정보
+CREATE TABLE MOVIE_INFO (
+    MV_NUM NUMBER PRIMARY KEY,
+    MV_TITLE VARCHAR2(200) NOT NULL,
+    MV_SUMMARY VARCHAR2(3000) NOT NULL,
+    MV_RELDATE DATE NOT NULL,
+    MV_TIME VARCHAR2(10) NOT NULL,
+    MV_RATING VARCHAR2(30) NOT NULL,
+    MV_DIRECTOR VARCHAR2(50) NOT NULL,
+    MV_ACTOR VARCHAR2(100) NOT NULL,
+    MV_READCNT NUMBER DEFAULT 0 NOT NULL,
+    MV_POSTER VARCHAR2(500)
+    );
+
+// 기대평
+CREATE TABLE PREVIEW (
+    PRE_NUM NUMBER PRIMARY KEY,
+    PRE_MV_NUM NUMBER,
+    PRE_M_ID VARCHAR2(16),
+    PRE_REGDATE DATE DEFAULT SYSDATE NOT NULL,
+    PRE_CONTENT VARCHAR2(420) NOT NULL,
+    CONSTRAINT FK_PRE_MV_NUM FOREIGN KEY(PRE_MV_NUM) REFERENCES MOVIE_INFO(MV_NUM)
+    );
+
+-- 감상평
+CREATE TABLE REVIEW (
+    RV_NUM NUMBER PRIMARY KEY,
+    RV_MV_NUM NUMBER,
+    RV_M_ID VARCHAR2(16),
+    RV_REGDATE DATE DEFAULT SYSDATE NOT NULL,
+    RV_TITLE VARCHAR2(300) NOT NULL,
+    RV_READCNT NUMBER DEFAULT 0 NOT NULL,
+    CONSTRAINT FK_RV_MV_NUM FOREIGN KEY(RV_MV_NUM) REFERENCES MOVIE_INFO(MV_NUM)
+    );
+    
+-- 감상평_내용
+CREATE TABLE REVIEW_CONTENT (
+    RVC_RV_NUM NUMBER PRIMARY KEY,
+    RVC_CONTENT CLOB NOT NULL,
+    CONSTRAINT FK_RV_NUM FOREIGN KEY(RVC_RV_NUM) REFERENCES REVIEW(RV_NUM) ON DELETE CASCADE
+    );
+    
+-- 댓글
+CREATE TABLE REVIEW_REPLY (
+    RP_NUM NUMBER PRIMARY KEY,
+    RP_RV_NUM NUMBER,
+    RP_M_ID VARCHAR2(16),
+    RP_REGDATE DATE DEFAULT SYSDATE NOT NULL,
+    RP_CONTENT VARCHAR2(900) NOT NULL,
+    CONSTRAINT FK_RP_RV_NUM FOREIGN KEY(RP_RV_NUM) REFERENCES REVIEW(RV_NUM) ON DELETE CASCADE
+    );
+
+CREATE SEQUENCE MOVIE_INFO_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+CREATE SEQUENCE PREVIEW_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+CREATE SEQUENCE REVIEW_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+CREATE SEQUENCE REVIEW_REPLY_SEQUENCE 
+START WITH 1
+INCREMENT BY 1
+MINVALUE 0
+MAXVALUE 10000
+NOCACHE;
+
+-- MEMBER 테이블 INSERT
+INSERT INTO MEMBER VALUES('AAA', '1111', '910208-1', 'aaa@a.com', '010-1111-2222', SYSDATE);
+INSERT INTO MEMBER VALUES('BBB', '2222', '970621-1', 'BBB@a.com', '010-3333-4444', SYSDATE);
+INSERT INTO MEMBER VALUES('CCC', '3333', '880113-1', 'CC@n.com', '010-5555-6666', SYSDATE);
+INSERT INTO MEMBER VALUES('DDD', '4444', '940218-1', 'DDD@a.com', '010-7777-8888', SYSDATE);
+INSERT INTO MEMBER VALUES('EEE', '5555', '850817-1', 'EEE@b.com', '010-9999-8899', SYSDATE);
+INSERT INTO MEMBER VALUES('FFF', '6666', '950921-2', 'FF@a.com', '010-1234-5678', SYSDATE);
+INSERT INTO MEMBER VALUES('GGG', '7777', '821207-2', 'GG@n.com', '010-1212-3434', SYSDATE);
+INSERT INTO MEMBER VALUES('HHH', '8888', '040718-2', 'HHHH@b.com', '010-4545-5656', SYSDATE);
+INSERT INTO MEMBER VALUES('III', '9999', '850505-2', 'III@a.com', '010-2323-3434', SYSDATE);
+INSERT INTO MEMBER VALUES('JJJ', '1122', '931101-2', 'JJJ@a.com', '010-7878-7878', SYSDATE);
+COMMIT;
+
+-- MOVIE_INFO 테이블 INSERT
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '박열',
+'"조선인에게는 영웅, 우리한텐 원수로 적당한 놈을 찾아."
+1923년, 관동대지진 이후 퍼진 괴소문으로 6천여 명의 무고한 조선인이 학살된다.
+사건을 은폐하기 위해, 관심을 돌릴 화젯거리가 필요했던 일본내각은 
+불령사를 조직해 항일운동을 하던 조선 청년 박열을 대역사건의 배후로 지목한다.
+"그들이 원하는 영웅이 돼줘야지"
+일본의 계략을 눈치챈 박열은 동지이자 연인인 가네코 후미코와 함께 
+일본 황태자 폭탄 암살 계획을 자백하고,
+사형까지 무릅쓴 역사적인 재판을 시작하는데....  
+조선인 최초의 대역죄인! 
+말 안 듣는 조선인 중 가장 말 안 듣는 조선인! 
+역사상 가장 버릇없는 피고인! 
+일본 열도를 발칵 뒤집은 사상 초유의 스캔들! 그 중심에 박열이 있었다!',
+'2017-06-28', '129분', '12세 관람가', '이준익', '이제훈, 최희서' ,0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79741/79741_185.jpg');
+ 
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'트랜스포머: 최후의 기사',
+'두 세상의 충돌, 하나만 살아남는다!
+옵티머스 프라임은 더 이상 인간의 편이 아니다. 
+트랜스포머의 고향 사이버트론의 재건을 위해 지구에 있는 고대 유물을 찾아나선 옵티머스 프라임은 인류와 피할 수 없는 갈등을 빚고, 오랜 동료 범블비와도 치명적인 대결을 해야만 하는데… 
+영원한 영웅은 없다!
+하나의 세상이 존재하기 위해선 다른 세상이 멸망해야 한다!',
+'2017-06-21', '151분', '12세 관람가', '마이클 베이', '마크 월버그,  안소니 홉킨스, 로라 하드독',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79748/79748_1000.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'리얼',
+'아시아 최대 규모의 카지노를 둘러싼 거대한 음모와 전쟁
+"나와 똑같이 생긴 놈이 나타났다"
+카지노 시에스타 오픈을 앞둔 조직의 보스 장태영(김수현) 앞에
+암흑가 대부 조원근(성동일)이 카지노의 소유권을 주장하며 나타난다.
+조원근의 개입으로 카지노를 빼앗길 위기에 처한 장태영은
+자금 문제를 해결하기 위해 투자자를 찾아 나선다. 
+어느 날, 이름뿐만 아니라 생김새마저 똑같은 의문의 투자자(김수현)가 나타나
+자금은 물론 조원근까지 해결해주겠다는 제안을 한다.
+의문의 투자자의 등장으로 조원근과 카지노를 차지하기 위한 전쟁이 시작되고
+이들을 둘러 싼 거대한 비밀과 음모의 정체가 서서히 드러난다.
+오직 진짜만이 모든 것을 갖는다!',
+'2017-06-28','137분','청소년 관람불가', '이사랑','김수현, 이성민, 성동일',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79733/79733_185.jpg');
+            
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'옥자',
+'우린 집으로 갈거야, 반드시 함께
+강원도 산골 소녀 미자(안서현)에게 옥자는 10년 간 함께 자란 둘도 없는 친구이자 소중한 가족이다. 
+자연 속에서 평화롭게 지내던 어느 날, 글로벌 기업 미란도가 나타나 갑자기 옥자를 뉴욕으로 끌고가고, 
+할아버지(변희봉)의 만류에도 미자는 무작정 옥자를 구하기 위해 위험천만한 여정에 나선다.
+극비리에 옥자를 활용한 슈퍼돼지 프로젝트를 추진 중인 미란도 코퍼레이션의 CEO 루시 미란도(틸다 스윈튼), 
+옥자를 이용해 제2의 전성기를 꿈꾸는 동물학자 죠니(제이크 질렌할), 옥자를 앞세워 또 다른 작전을 수행하려는 비밀 동물 보호 단체 ALF까지. 
+각자의 이권을 둘러싸고 옥자를 차지하려는 탐욕스러운 세상에 맞서, 옥자를 구출하려는 미자의 여정은 더욱 험난해져 간다.',
+'2017-06-29','120분','12세 관람가','봉준호','틸다 스윈튼, 폴 다노, 제이크 질렌할', 0,'http://movie.phinf.naver.net/20170608_215/1496888498204sVHym_JPEG/movie_image.jpg?type=m203_290_2');
+               
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'스파이더맨: 홈커밍',
+'마블 히어로의 세대교체!
+“어벤져스가 되려면 시험 같은 거 봐요?”
+‘시빌 워’ 당시 ‘토니 스타크’(로버트 다우니 주니어)에게 발탁되어 
+대단한 활약을 펼쳤던 스파이더맨 ‘피터 파커’(톰 홀랜드).
+그에게 새로운 수트를 선물한 ‘토니 스타크’는 위험한 일은 하지 말라며 조언한다. 
+하지만 허세와 정의감으로 똘똘 뭉친 ‘피터 파커’는 세상을 위협하는 강력한 적 ‘벌처’(마이클 키튼)에 맞서려 하는데… 
+            
+아직은 어벤져스가 될 수 없는 스파이더맨 
+숙제보다 세상을 구하고 싶은 스파이더맨 
+그는 과연 진정한 히어로로 거듭날 수 있을 것인가!',
+'2017-07-05', '133분', '12세 관람가','존 왓츠', '톰 홀랜드, 로버트 다우니 주니어', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79783/79783_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'재꽃',
+'아스팔트의 깨어진 틈새마다 자라나는 들풀처럼
+그렇게 한 아이가 온다.
+한적한 시골 마을에서 평범한 삶을 보내고 있는 하담(정하담)에게 
+한 번도 만나본 적 없는 아빠를 찾겠다며 자신과 꼭 닮은 열한 살 소녀, 해별(장해금)이 찾아온다 . 
+고요했던 마을은 해별의 등장과 함께 복잡미묘한 감정들이 소용돌이 치게 되는데…',
+'2017-07-06','125분','12세 관람가','박석영', '정하담, 장해금, 정은경',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79783/79783_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'그 후',
+'첫 출근날, 아름은 사장인 봉완의 헤어진 여자 자리에서 일하게 된다.
+사랑의 노트가 발견되고, 봉완의 처가 회사로 찾아 오고, 아름은 헤어진 여자로 오해를 받는다.
+결국 아름은 그날 회사를 그만 둘 수 밖에 없게 되는데…',
+'2017-07-06','91분','청소년 관람불가','홍상수','권해효',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79784/79784_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'베를린 신드롬',
+'영감을 얻기 위해 베를린으로 온 호주의 사진작가 클레어 (테레사 팔머). 
+그 곳에 살고 있는 매력적인 남자 앤디 (막스 리멜트)를 만나 열정적인 하룻밤을 보낸다. 
+하지만 다음 날 앤디가 출근한 뒤 빈집에 홀로 남은 클레어는 
+베를린의 외딴 아파트에 감금되었다는 사실을 알게 되는데..! 
+빠져나오려 할수록 더욱 옥죄어 오는 앤디! ',
+'2017-07-06','116분','청소년 관람불가', '케이트 쇼트랜드','테레사 팔머, 막스 리멜트',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79743/79743_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt,mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'내 사랑',
+'“당신의 마지막 인생 로맨스는 언제였나요?
+운명처럼 세상에서 가장 작은집에서 만난 에버렛과 모드. 
+혼자인 게 익숙했던 이들은 서서히 서로에게 물들어가며 깊은 사랑을 하게 되고 서로의 사랑을 풍경처럼 담는다.',
+'2017-07-12','115분','12세 관람가','에이슬링 월쉬','에단 호크, 샐리 호킨스',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79639/79639_185.jpg'); 
+
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval,'스파이더맨: 홈커밍데이',
+'마블 히어로의 세대교체!
+“어벤져스가 되려면 시험 같은 거 봐요?”
+ 
+‘시빌 워’ 당시 ‘토니 스타크’(로버트 다우니 주니어)에게 발탁되어
+대단한 활약을 펼쳤던 스파이더맨 ‘피터 파커’(톰 홀랜드).
+그에게 새로운 수트를 선물한 ‘토니 스타크’는 위험한 일은 하지 말라며 조언한다.
+하지만 허세와 정의감으로 똘똘 뭉친 ‘피터 파커’는
+세상을 위협하는 강력한 적 ‘벌처’(마이클 키튼)에 맞서려 하는데…
+ 
+아직은 어벤져스가 될 수 없는 스파이더맨
+숙제보다 세상을 구하고 싶은 스파이더맨
+그는 과연 진정한 히어로로 거듭날 수 있을 것인가!',
+'2017-07-08', '133분', '12세 이상', '존 왓츠', '톰 홀랜드, 로버트 다우니 주니어, 마이클 키튼', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79801/79801_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '다크 나이트', 
+'정의로운 지방 검사 ‘하비 덴트’, ‘짐 고든’ 반장과 함께 범죄 소탕 작전을 펼치며
+범죄와 부패로 들끓는 고담시를 지켜나가는 ‘배트맨’
+ 
+그러던 어느 날, 살아남기 위해 발버둥치던 범죄 조직은 배트맨을 제거하기 위해
+광기어린 악당 ‘조커’를 끌어들이고
+정체를 알 수 없는 조커의 등장에 고담시 전체가 깊은 혼돈 속으로 빠져든다.
+ 
+
+급기야 배트맨을 향한 강한 집착을 드러낸 조커는
+그가 시민들 앞에 정체를 밝힐 때까지 매일 새로운 사람들을 죽이겠다 선포하고
+배트맨은 사상 최악의 악당 조커를 막기 위해 자신의 모든 것을 내던진 마지막 대결을 준비한다.
+ 
+어둠의 기사 배트맨 vs 절대악 조커
+운명을 건 최후의 결전이 시작된다!',
+'217-07-12', '152분', '15세 관람가', '크리스토퍼 놀란', '크리스찬 베일, 히스 레저', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79772/79772_185.jpg');
+
+
+/* 7월 13일 개봉 영화 */
+insert into movie_info (MV_NUM, MV_TITLE,MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '너의 이름은.', 
+'꿈 속에서 몸이 뒤바뀐 도시 소년 ‘타키’와 시골 소녀 ‘미츠하’,
+만난 적 없는 두 사람이 만들어가는 기적과 사랑에 관한 이야기 <너의 이름은.>
+지창욱, 김소현 그리고 이레의 목소리 연기로
+신카이 마코토 감독의 경이로운 흥행 신드롬이 다시 시작된다!
+ 
+잊고 싶지 않은 사람
+잊으면 안 되는 사람
+너의 이름은',
+'2017-07-13', '107분', '12세 관람가', '신카이 마코토', '카미키 류노스케, 카미시라이시 모네', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79313/79313_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '아메리칸 허니: 방황하는 별의 노래',
+'DREAM.
+We Found LOVE.
+ 
+“혹시, 꿈 있어?”
+마트에서 우연히 만난 ‘제이크’의 제안으로 미국을 횡단하는 크루에 합류한 소녀 ‘스타’
+낮에는 잡지를 팔고 밤마다 파티를 즐기는 자유로운 세상에서
+꿈과 사랑을 찾아가는 아메리칸 허니들의 뜨거운 이야기가 시작된다.',
+'2017-7-13', '163분', '청소년 관람불가', '안드레아 아놀드', '사샤 레인, 샤이아 라보프, 라일리 코프', 0 ,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79757/79757_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '예수는 역사다',
+'트리뷴 지의 최연소 신입 기자로 입사한 후
+능력을 인정받으며 승승장구하던 남편 ‘리 스트로벨’.
+가족과 함께 하던 저녁 식사 자리에서 한 크리스천의 도움으로 딸을 응급상황에서 구해낸다.
+이후 아내가 신앙의 길로 들어서자 무신론자이자 사실과 이성적인 근거를 중시하는 ‘리’는
+아내의 신앙심과 하나님의 존재를 부정하며 이를 받아들이지 않는다.
+“사실을 통해서만 진실로 갈 수 있다”
+눈에 보이는 것만이 실제라고 절대적으로 믿던 ‘리’.
+전문가들의 소견과 수많은 증거들을 따라
+예수의 존재에 대한 끈질긴 수소문을 거듭하던 ‘리’는
+자신의 기사로 인해 억울하게 누명을 쓰고 기소된 ‘힉스’의 사건을 겪으면서
+사실과 믿음 사이에서 갈등하기 시작한다.
+마침내, 그는 예수의 부활과 영생에 대한 놀라운 진실을 발견해 가기 시작하는데…',
+'2017-7-13', '113분', '전체 관람가', '존 건', '마이크 보겔, 에리카 크리스텐센, 페이 더너웨이', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79735/79735_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '카3: 새로운 도전',
+'잘나가던 슈퍼카, 이젠 똥차 취급?!
+ 
+전세계 1위의 자리를 놓치지 않던 레이싱계의 전설 ‘맥퀸’.
+어느 날 최첨단 기술로 무장한 ‘스톰’이 화려하게 데뷔를 하고,
+맥퀸은 경기 도중 무리를 하다 치명적 부상까지 입는다.
+ 
+절망에 빠진 맥퀸은 실력파 트레이너 ‘크루즈’를 만나 새로운 도전에 나서지만
+안 맞아도 너무 안 맞는 크루즈와의 훈련은 맥퀸을 또 다시 어려움에 빠트리는데….
+ 
+완벽한 반격을 위한 최후의 도전이 시작된다!',
+'2017-7-13', '109분', '전체 관람가', '브라이언 피', '아미 해머, 나단 필리온, 오웬 윌슨', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79768/79768_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '파밍 보이즈',
+'벼랑 끝 청춘들이 일궈낸 유기농 디톡스 무비!
+ 
+농사로 지구를 구하고픈 지황, 꿈을 찾고픈 하석, 고향을 멋지게 가꾸고픈 두현. 목적은 다르지만 땅을 꿈꾸는 세 청년이 모여 무일푼 농업세계일주 도전을 결심한다. 여행도 하고, 영어도 배우고, 농사도 배울 수 있는 일석삼조의 기회! 하지만 쉽지만은 않은 해외농장 컨택, 80군데의 농장 중 회신이 오는 곳은 겨우 7군데다. 과연 이들은 그들이 원하는 로드 무비를 실현할 수 있을까?',
+'2017-07-13', '98분', '전체 관람가', '장세정', '권두현, 김하석, 유지황', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79777/79777_185.jpg');
+
+
+/* 7월 19일 개봉 영화 */
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '내가 죽기 전에 가장 듣고 싶은 말',
+'완벽한 엔딩을 위한 인생개조프로젝트!
+은퇴한 광고 에이전시 보스 ‘해리엇’(셜리 맥클레인)은 자신의 사망기사를 미리 컨펌하기 위해 사망기사 전문기자인 ‘앤’(아만다 사이프리드)을 고용한다. 
+하지만 해리엇의 까칠한 성격 탓에 주변 사람들은 모두 저주의 말만 퍼붓고, 좌절한 앤에게 해리엇은 뜻밖의 제안을 한다. 
+완벽한 사망기사를 위해서 반드시 필요한 ‘고인은 동료들의 칭찬을 받아야 하고, 가족의 사랑을 받아야 하며, 
+누군가에게 우연히 영향을 끼쳐야 하고, 자신만의 와일드 카드가 있어야 한다’는 4가지 요소를 같이 찾자는 것! 
+게다가 티격 대는 둘 사이에 말썽쟁이 문제소녀 ‘브렌다’까지 가세해 해리엇의 인생을 다시 써나가기 시작하는데…
+까칠한 80세 마녀, 마지막을 빛내줄 최고의 파트너를 만났다!',
+'217-7-19', '107분', '12세 관람가', '마크 펠링톤', '셜리 맥클레인, 아만다 사이프리드, 토머스 새도스키, 앤쥴 리 딕슨', 0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79742/79742_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '다이노소어 아일랜드',
+'더 크고 강력해진 공룡들의 세상 속,
+생존을 위한 위대한 모험이 펼쳐진다!
+
+여름방학을 맞아 LA로 가던 중 비행기 추락으로 인해 낯선 섬에 떨어진 루카스.
+다른 생존자를 찾던 중 루카스는 케이트를 만나게 되고, 그녀를 통해 이 섬은 장소를 막론하고 모든 것을 빨아들이고 위협한다는 신기한 이야기를 듣게 된다.
+출구는 오로지 에너지의 원천인 화산에 있다는 말을 듣고 위대한 모험을 시작하는데...
+
+과연 이들은 무사히 탈출 할 수 있을까?',
+'2017-07-19','78분','전체 관람가','매트 드럼몬드','다리우스 윌리엄스, 케이트 라스뮤센, 제나 베글리',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79797/79797_185.jpg');
+
+
+/* 7월 20일 개봉 영화 */
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '100미터',
+'우승이 아닌 완주에 도전하는 한 남자의 이야기
+당신의 가슴을 울린다!
+ 
+성공한 광고회사 직원 라몬은
+회사와 집에서는 사랑과 존경을 받아오지만
+홀아비인 장인어른이 자신의 집으로 이사온 이후 성격 차이로 늘 티격태격 이다.
+그러던 어느 날 갑자기 온 몸이 마비되는 다발성 경화증이라는 진단을 받은 라몬은
+30대 중반의 나이에 생을 포기해야 할지,
+아니면 병마와 싸워 이겨낼지 선택의 기로에 서지만
+자신의 가족과 다발성 경화증 환자들의 완치를 위해
+가장 힘든 철인 3종 경기인
+‘아이언 맨’에 도전하기로 결정하는데…',
+'2017-07-20','109분','15세 관람가','마르셀 바레나','다니 로비라, 카라 엘레잘데, 알렉산드라 지메네즈, 마리아 데 메데이로스',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79787/79787_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '극장판 짱구는 못말려 : 습격!! 외계인 덩덩이 ',
+'2017년 여름, 짱구의 엉덩이에 지구의 운명이 걸렸다!
+짱구의 집에 불시착한 UFO의 주인 외계인 ‘덩덩이’.
+‘나스파디’ 별에서 온 ‘덩덩이’는 무시무시한 ‘꼬마꼬마 파워’로
+짱구의 엄빠를 어린이로 만들어버린다!
+엄빠를 다시 어른으로 되돌리기 위해 ‘덩덩이’의 아빠를 만나러 떠나지만
+연락이 닿지 않고, 심지어 지구를 위협하는 외계인의 음모까지 드러나기 시작하는데….!!!
+
+짱구의 엉덩이에 숨은 외계인 ‘덩덩이’와 가족들의 스펙터클한 대모험이 펼쳐진다!',
+'217-07-20','103분','전체 관람가',' 하시모토 마사카즈','야지마 아키코, 사와시로 미유키',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79769/79769_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '덩케르크 ',
+'"우린 끝까지 싸울 것이다"
+살아남는 것이 승리다!
+해변: 보이지 않는 적에게 포위된 채 어디서 총알이 날아올지 모르는 위기의 일주일
+바다: 군인들의 탈출을 돕기 위해 배를 몰고 덩케르크로 항해하는 하루
+하늘: 적의 전투기를 공격해 추락시키는 임무, 남은 연료로 비행이 가능한 한 시간
+“우리는 해변에서 싸울 것이다. 우리는 상륙지에서 싸울 것이다. 우리는 들판에서 싸우고 시가에서도 싸울 것이다. 우리는 끝까지 싸울 것이다”',
+'2017-07-20','106분','12세 관람가','크리스토퍼 놀란','케네스 브래너, 킬리언 머피, 마크 라이언스, 톰 하디',0,'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79729/79729_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '오즈: 신기한 마법가루',
+'뿌리는 순간 무엇이든 살아나는 신기한 마법 가루를 되찾기 위한 도로시의 손녀와 친구들의 판타스틱 매직 어드벤처',
+'2017-07-20', '91분', '관람등급 미정', '블라디미르 토로프킨', '이장원, 김하영', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79770/79770_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '우리를 침범하는 것들',
+'도시 외곽에 터를 잡고 법에 구애 받지 않은 채 자유로운 삶을 살아가는 무리의 리더 ‘채드’는 
+아들 ‘타이슨’만은 제대로 된 세상에서 살아가길 바란다. 
+하지만, ‘채드’의 아버지는 손자 역시 대를 이어 무리의 리더로 키우려 한다. 
+아들을 위해 아버지와 맞서기로 한 ‘채드’. 
+그러던 어느 날, 도시에서 큰 절도 사건과 함께 아들이 사라지는 일이 발생하자 
+경찰은 골칫거리였던 ‘채드’를 주목하는데… 
+  
+가장 거친 남자의 가장 뜨거운 엔딩',
+'2017-07-20', '99분', '15세 관람가', '아담 스미스', '마이클 패스벤더, 브렌단 글리슨', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79763/79763_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '위시 어폰 ',
+'“네가 사라졌으면 좋겠어…”
+우연히 얻게 된 뮤직박스가
+7개의 소원을 들어준다는 걸 알게 된 ‘클레어’.
+무심코 뱉은 말은 현실이 되고,
+그녀 주변에는 끔찍한 일들이 벌어지는데…
+ 
+멜로디가 들리면 저주가 시작된다
+절대 소원을 말하지 말 것!',
+'2017-07-20', '00분', '관람등급 미정', '존 R. 레오네티', '조이 킹, 이기홍, 라이언 필립', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79750/79750_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '프란츠',
+'“당신의 거짓말을 사랑해요”
+1차 세계대전 직후 독일의 작은 마을,전쟁으로 약혼자 프란츠를 잃고 슬픔에 빠진 안나.
+그녀에게 자신을 프란츠의 친구라 소개하는 프랑스 남자 아드리앵이 찾아온다.
+안나는 아드리앵에게 마음을 열기 시작하지만,
+비밀을 간직한 아드리앵은 돌연 편지 한 통을 남기고 자신의 고향 프랑스로 돌아가는데…',
+'2017-07-20', '113분', '12세 관람가', '프랑소아 오종', '피에르 니네이, 폴라 비어', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79745/79745_185.jpg');
+
+
+/* 7월 26일 개봉 영화 */
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '군함도',
+'1945년 일제강점기.
+경성 반도호텔 악단장 ''강옥''(황정민)과 그의 하나뿐인 딸 ''소희''(김수안).
+그리고 종로 일대를 주름잡던 주먹 ''칠성''(소지섭), 일제 치하에서 온갖 고초를 겪어온 ''말년''(이정현) 등
+각기 다른 사연을 품은 조선인들이 일본에서 돈을 벌 수 있다는 말에 속아 군함도로 향한다.
+하지만 그들이 함께 탄 배가 도착한 곳은 조선인들을 강제 징용해 노동자로 착취하고 있던 ‘지옥섬’ 군함도였다.
+ 
+영문도 모른 채 끌려온 조선인들이 해저 1,000 미터 깊이의 막장 속에서
+매일 가스 폭발의 위험을 감수하며 노역해야 하는 군함도.
+강옥은 어떻게 하든 일본인 관리의 비위를 맞춰 딸 소희만이라도 지키기 위해 온갖 수를 다하고,
+칠성과 말년은 각자의 방식으로 고통스런 하루하루를 견뎌낸다. 
+한편 전쟁이 막바지로 치닫자 광복군 소속 OSS 요원 ‘무영’(송중기)은
+독립운동의 주요인사 구출 작전을 지시 받고 군함도에 잠입한다.
+ 
+일본 전역에 미국의 폭격이 시작되고 일본의 패색이 짙어지자
+일본은 군함도에서 조선인에게 저지른 모든 만행을 은폐하기 위해 조선인들을 갱도에 가둔 채 폭파하려고 한다.
+이를 눈치 챈 무영은, 강옥, 칠성, 말년을 비롯한 조선인 모두와 군함도를 빠져나가기로 결심하는데...!
+ 
+지옥섬 군함도, 조선인들의 목숨을 건 탈출이 시작된다!',
+'2017-07-26', '132분', '15세 관람가', '류승완', '이정현, 황정민, 소지섭, 송중기', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79744/79744_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '송 투 송',
+'사랑을 원하는 천재 뮤지션 BV
+사랑을 탐하는 자유로운 싱어송라이터 Faye
+사랑에 미친 유능한 프로듀서 Cook
+사랑에 아픈 Cook의 아내 Rhonda
+ 
+음악과 사랑에 중독된 네 남녀의 대담하고 치명적인 러브스토리
+2017년 여름, 거부할 수 없는 사랑이 시작된다',
+'2017-07-26', '128분', '청소년 관람불가', '테렌스 맬릭', '라이언 고슬링, 루니 마라, 마이클 패스밴더, 나탈리 포트만', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79823/79823_185.jpg');
+
+insert into movie_info (MV_NUM, MV_TITLE, MV_SUMMARY, MV_RELDATE, MV_TIME, MV_RATING, MV_DIRECTOR, MV_ACTOR, mv_readcnt, mv_poster)
+values(MOVIE_INFO_SEQUENCE.nextval, '슈퍼배드 3',
+'올 여름, 전 세계를 점령할 놈들이 온다! 
+
+최고의 악당만을 보스로 섬기는 ‘미니언’
+가족을 위해 악당 은퇴를 선언한 ‘그루’
+
+그루의 배신에 실망한 미니언들은
+스스로 악당이 되기 위해 그루를 떠난다.
+
+한편, 같은 얼굴 다른 스펙의 쌍둥이 동생 ‘드루’의 등장으로 인해
+그루는 자신이 역사상 가장 위대한 악당 가문의 후예임을 알게 되고,
+거부할 수 없는 슈퍼배드의 운명을 따르게 되는데…
+
+돌아온 그루와 미니언들은
+다시 함께할 수 있을까?',
+'2017-07-26', '90분', '전체 관람가', '피에르 꼬팽, 카일 발다', '스티브 카렐, 크리스틴 위그, 트레이 파커', 0, 'http://img.cgv.co.kr/Movie/Thumbnail/Poster/000079/79786/79786_185.jpg');
+
+COMMIT;
+
+-- PREVIEW 테이블 INSERT
+insert into PREVIEW values(PREVIEW_SEQUENCE.NEXTVAL, 6, 'AAA', SYSDATE, '홈커밍이라 보고잡다 ' );
+insert into PREVIEW values(PREVIEW_SEQUENCE.NEXTVAL, 7, 'BBB', SYSDATE, '재꽃 기대된다 ' );
+insert into PREVIEW values(PREVIEW_SEQUENCE.NEXTVAL, 8, 'CCC', SYSDATE, '그 후 어떤 그후? ' );
+insert into PREVIEW values(PREVIEW_SEQUENCE.NEXTVAL, 9, 'DDD', SYSDATE, '베를린 하면 한석규가 떠오르는데...' );
+insert into PREVIEW values(PREVIEW_SEQUENCE.NEXTVAL, 10, 'EEE', SYSDATE, '내 사랑을 얘기해 볼까 ' );
+COMMIT;
+
+-- REVIEW 테이블 INSERT
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,1,'AAA',SYSDATE,'한국인들이 반일에 집착하는건 컴플렉스때문',0);
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,1,'BBB',SYSDATE,'믿고 보는 이제훈 배우와 이준익 감독님!! 영화',0);
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,2,'CCC',SYSDATE,'마지막20분을 위한 2시간의 수면제',0); 
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,2,'DDD',SYSDATE,'트랜스포머 : 최후의 기사 - 다행이다',0); 
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,4,'FFF',SYSDATE,'삐딱한 시선,옥자의 그림자',0);
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,4,'CCC',SYSDATE,'예상 줄거리 및 감독의도',0);
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,5,'EEE',SYSDATE,'꿀잠 자는 미라좀 그만괴롭혀',0);
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,3,'GGG',SYSDATE,'팩트만 말하겠습니다. ',0);
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,3,'HHH',SYSDATE,'리얼 예상 관객수',0);
+INSERT INTO REVIEW VALUES(REVIEW_SEQUENCE.NEXTVAL,3,'III',SYSDATE,'명배우 김수현',0);
+COMMIT;
+
+-- REVIEW_CONTENT 테이블 INSERT
+INSERT INTO REVIEW_CONTENT VALUES(1,'아마 친일파 한명도 처벌안한 근본도없는 국가라서
+
+컴플렉스가 극단적 반작용으로 극우가 되지않았나 싶다
+
+중국은 일제의 핍박에도 불구 항일세력 마오쩌둥승리 <-- 승리의 역사
+
+북한도 일제의 핍박에도 불구 항일세력 김일성의 승리 <-- 승리의 역사
+
+반면 한국의 패배의 역사다. 그래서 더더욱 정신병처럼 반일에 몰두하는것이다 
+
+태극기고 친일파가 만들었고
+
+애국가도 친일파 작사 작곡함
+
+헌법도 친일파 초안해서 만듬. 
+
+국민의례? 일제가 천황에 충성하라고만든걸 그대로 차용함.
+
+경제발전도 일본인들이 남기고간 적산으로 일본과 미국의 힘을 빌려
+
+일본육사출신 다까끼마사오가 경제발전시킴.
+
+민족의 수치가 되고싶지않아
+
+북한보다 빡시게 시키는게 아닐까 추측함
+
+탈북자들이 한국와서 놀란다잖아. "남조선 인민들이 생각은 더 반일이야"
+
+근데 몸은 친일임. 한국인들은 누구보다 일본문화를 좋아함.
+
+충무로 트렌드로 일본임. 일제시대나 임진왜란 같은 시대물이 잘먹힘. 
+
+일본어가 나와줘야 있어보임. 박열 포스터도 베가본드 일본스러움. 
+
+한국인들은 누구보다 일본을 좋아한다는게 본심임.
+
+하루빨리 친일파가 척결되야 한국의 집단적 정신병이 사라질텐데
+
+일본은 패전이후 미국에 의해서 민주주의로 돌아섰지만
+
+한국은 친일파들이 제국주의시스템으로 1990년대까지 독재에 고문한나라임
+
+가장 제국주의 냄새가 나는 나라가 한국임. 엉뚱한 일본한테 뒤집어씌우지말자.
+
+관동대지진때 조선인은 모두 선이고 일본인은 모두 악? 
+
+지금 재일교포들은 일본에서 범죄를 일으키지않는가? 
+ 
+개개인을 집단화 시키고 구분해서 선악구도로 풀지말라고
+
+악마를 잡기위해 스스로 악마가 되는걸 경계하라 했다.');
+INSERT INTO REVIEW_CONTENT VALUES(2,'이제훈 배우와 이준익 감독님의 만남이라니!!!
+벌써부터 기대됩니다!!!
+
+열일하시는 이제훈 배우와 이준익 감독님의 만남으로도!!!! 
+존재 자체로도 정말 감사한 영화네요!!!
+
+독립운동가 <박열>의 삶이 궁금하고 기다려집니다!!
+이준익 감독님의 안목과 연출은 이미 너무나 검증된 사실!!!!
+
+<동주> 에서부터 봤던 배우님들도 함께 뵐 수 있다니!!
+무사히 안전하게 영화 촬영하시고 얼른 스크린에서 봐요^ ^
+
+이제훈 배우님, 이준익 감독님 파이팅!! 
+<박열> 영화팀 모두 응원합니다!!!!!!!!!!');
+INSERT INTO REVIEW_CONTENT VALUES(3,'1부터 눈뒤집히면서 반해버린 트랜스포머...3까지는 돈주고 봐줄만했다
+그이후 황사머니로인한 스토리와 액션은 산으로...
+이번편 역시 스케일은 엄청 컸다...
+중간 액션신들은 왜 이렇게 액션인데도 잠이오는지... 
+터번 소리좀 이제 그만 넣어라..쓸데없다 수면을 유도함
+솔직히 액션영화에 스토리 비중 크게 두지않지만 이건뭐 대사자체도 아재유머코드..  뜬금없이 썸타는 씬 마이클베이 연출력이 많이죽었네요  
+마지막 장면들은 그래도 잠에서 깨게해줄만큼 볼만했네요
+
+이제 그냥 R.I.P했으면 하는 트랜스포머 
+
+10점만점에5점'); 
+INSERT INTO REVIEW_CONTENT VALUES(4,'최근에 4편에 관한 평을 한적이 있습니다. 그 상태를 이어서 리뷰를 써봤습니다.
+
+일단 영화에 대해서 말하자면 절대 좋은 영화라고는 말 못하겠습니다.
+
+조금 과장하자면 망한거 같다고 봐도 무방할거 같습니다만...
+
+4편이나 3편에 비벼보자면 그래도 나름 선방한거 같아서 약간의 뿌듯함이 있었습니다.
+
+4편에서는 스토리와 영상미, 재미 그 어느하나 건질게 없었던 반면
+
+이번에는 그래도 건질만한 구석이 몇가지 있었기에 나름대로 별3개라는 좋은 평점을
+
+주고 말았습니다. (2.5개 줘도 할말 없는 영화...)'); 
+INSERT INTO REVIEW_CONTENT VALUES(5,'불판위에 올라가는 고기를 보면 언제든지간에 침은 고인다.
+자고로 돼지란 일부 국가를 제외하면 인류에게 모든 것을 할애해주는 존재이다.
+그런 돼지를 우리는 더럽고,불결하고,욕망의 상징으로 본다.(근데 꿈에 나오면 좋아한다. 
+이중잣대란...)
+언젠가부터 봉준호감독의 유전자공학적 괴생명체 영상물 만들기 취미는 내가 갓 초등학교때
+나왔던 괴물을 시발점으로 어느덧 그 범위를 넓혀 지금 현재 2017년,세계 무대를 기준으로
+도전장을 던진다. 디스토피아적 일렬구조 사회의 시민혁명적 싸움을 다룬 <설국열차>를
+아이맥스로 보며 하관절 탈구의 위험이 생길정도의 감명을 받았던 나는 이번 <옥자>가 과연
+이미 1916년 서부전선의 솜전투 이후의 땅처럼 폐허 그 자체가 되어버린 한국 SF형 가족드라마가
+성공을 거둘 수 있을지 조마조마한 마음으로 영화관으로 향했다.');
+INSERT INTO REVIEW_CONTENT VALUES(6,'지구촌 식량난의 해결이란 미명(훼이크) 아래 슈퍼돼지 개발. 개발자는 쌍둥이 틸다(CEO 말고)그 슈퍼돼지들은 생김새가 3종류의 혼종. 돼지(먹는다)+고릴라(인간과 비슷)+ 코끼리(크다)돼지들을 전 세계 보내 기후 적응테스트하다가 미자 만나고. 곧 테스트가 종료. 미국 본사에서 테스트 슈퍼돼지들을 거둬들임. 환경단체는 오히려 식량난 해결 한다니까 옥자의 회수를 환영. 미자는 우여곡절 끝에 미국본사까지 가서 옥자 찾게 됨. 근데 알고보니 옥자는 식용이 아니라 의료용으로 개발한 거. 옥자의 장기, 뇌, 안구들을 연구. 즉 인간 복제의 시험작인 것. 옥자는 해체되고 각 부위는 여러 크리쳐로 재탄생. 미자는 미로같은 연구실에서 크리쳐들을 만남. 옥자의 각 부위들은 미자의 기억을 가지고 있음. 회사의 비밀 폭로.');
+INSERT INTO REVIEW_CONTENT VALUES(7,'인간은 호기심이 많고 잔인한 생물이다 학교실습을 이유로 개구리 배를 갈라 내장을 꺼내고 관찰한다
+혹은 걷기시작하면 스믈스믈 기어다니는 개미를 붙잡아 능지처참하거나 밟아죽여버린다
+지하 800미터 아래 무덤에서 꿀잠 자는 미이라도 인간의 마수에서 벗어날수없었다
+분명 경고장에 나지금 꿀잠자고있으니 깨우면 뒤진다라고 써붙여놨음에도 불구하고 다큰 어른들이 어머니아버지가 일베충 디씨충 맘충이였는지 하지말라는 짓을 결국하고만다
+왜일까?? 나무를 꺽지말라고 써붙여놓으면 꺽고 친구들과 뭉처 욕질하지말라고 써붙여놓으면 세상의 중임인냥 우리엄마는 맘충이아닌양 욕질을해대며 떠들어대는걸까?
+결국 미이라도 이해답을 찾지못하고 다큰 양놈 속국의 어른이들에게 잡혀 신나게 능욕당하다 칼빵 모랄빵을 끝 영원한 꿀잠을 다시 자게된다.');
+INSERT INTO REVIEW_CONTENT VALUES(8,'액션 느와르라고 하는데...
+
+역대급 영화 하나 나왔군요
+
+개봉 후 관객들이 이 영화를 보고서 극장에서 팝콘을 던지면 그게 액션이고
+
+관객들이 감독을 납치하고나서 의자에다 묶고 머리에다 총겨누면 그게 느와르가 될겁니다.
+
+이 영화의 부제는 다세포소녀2,맨데이트2,긴급조치20호,성냥팔이소녀의 재림의 재림이 되어야 할겁니다.
+
+장담하건데 이 영화 평점이 4점 이상이 넘어간다면 그건 알바들을 푼 것이거나 김수현 혹은 설리 팬들의 실드성 별점이 매겨진 것입니다.
+
+추가로 더 적자면 어떻게 이정도의 배우들로 이런 영화를 만들었는지가 의심이 드는군요
+
+마치 고급식재료들을 라면 한봉지에 모조리 투하해버린 듯한 느낌
+
+이 영화를 볼 돈과 시간으로 다른 일을 하는 것을 강력히 추천드립니다.
+
+날씨 더운데 괜히 열받으실 필요 없다고 생각되는군요');
+INSERT INTO REVIEW_CONTENT VALUES(9,'
+6월 28일(수) - 10만명
+
+개봉 첫날 평일임에도 불구하고 김수현 이라는 배우의 이름값 하나만으로
+10만명 이상의 관객을 불러모을것으로 확신한다.
+
+6월 29일(목) - 10만명
+
+둘째날 역시 10만명 가능할것으로 예상한다.
+이유는 똥인지 된장인지 찍어먹어봐야 아는 한국관객들의 특성상
+첫째날 관객들의 관람평을 무시하고 돈을 버리려고 할 것이기 때문이다.');
+INSERT INTO REVIEW_CONTENT VALUES(10,'정말 우리 명배우 수현 오빠 영화 대박 기원하구요 수현오빠 힘!!내시고 영화 정말 재밌게 보겠습니다.열심히 촬영한만큼 큰성과가 있었으면 좋겠습니다. 정말 재밌을거 같고 저희 팬들에게는 정말 활역소 가 될거 같네요 여러분 영화 많은 관심 부탁드립니다. 저희 수현 오빠도 많이 사랑해 주세요~~');
+COMMIT;
+
+-- REVIEW_REPLY 테이블 INSERT
+INSERT INTO REVIEW_REPLY VALUES(1,REVIEW_REPLY_SEQUENCE.NEXTVAL,'AAA',SYSDATE,'저도 이 영화 재밌게 봤는데, 저랑 같은 생각이시네요.'); 
+INSERT INTO REVIEW_REPLY VALUES(2,REVIEW_REPLY_SEQUENCE.NEXTVAL,'BBB',SYSDATE,'아직 안봤는데 이 감상평읽으니 보고싶네요.'); 
+INSERT INTO REVIEW_REPLY VALUES(3,REVIEW_REPLY_SEQUENCE.NEXTVAL,'CCC',SYSDATE,'저는 그렇게 생각하지 않습니다.'); 
+INSERT INTO REVIEW_REPLY VALUES(4,REVIEW_REPLY_SEQUENCE.NEXTVAL,'DDD',SYSDATE,'이 영화 얼마나 무섭나요??? 혼자보기 무서워'); 
+INSERT INTO REVIEW_REPLY VALUES(5,REVIEW_REPLY_SEQUENCE.NEXTVAL,'EEE',SYSDATE,'친구와 같이 좋은 영화 추천해주세요.'); 
+INSERT INTO REVIEW_REPLY VALUES(6,REVIEW_REPLY_SEQUENCE.NEXTVAL,'FFF',SYSDATE,'저는 마지막 장면이 제일 별로던데, 글쓴이랑 생각이 다르네'); 
+INSERT INTO REVIEW_REPLY VALUES(7,REVIEW_REPLY_SEQUENCE.NEXTVAL,'GGG',SYSDATE,'리뷰 잘 보고갑니다.'); 
+INSERT INTO REVIEW_REPLY VALUES(8,REVIEW_REPLY_SEQUENCE.NEXTVAL,'HHH',SYSDATE,'리뷰 완전 공감!!'); 
+INSERT INTO REVIEW_REPLY VALUES(9,REVIEW_REPLY_SEQUENCE.NEXTVAL,'III',SYSDATE,'감상평 잘 쓰셨네요. 글솜씨가 있으신듯..'); 
+INSERT INTO REVIEW_REPLY VALUES(10,REVIEW_REPLY_SEQUENCE.NEXTVAL,'JJJ',SYSDATE,'맞아요. 재밌는 영화인데 왜 이렇게 평점이 낮은지 궁금하네요'); 
+COMMIT;
