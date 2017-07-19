@@ -1,0 +1,151 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="css/NewBasic.css">
+
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script src="js/slides.min.jquery.js"></script>
+
+<title>로그인</title>
+
+<style>
+
+.form-container {
+   margin-top: 80px; 
+   margin:auto;                          /* 큰 박스 센터 */
+   
+   border: 1px solid #212121;    /* 큰 박스 테두리 두깨와 색상  */
+   background: #A6A6A6;            /* 큰 박스 배경색 */
+   border-radius: 4px;
+   
+   font-family: '고딕' ;
+   padding:20px;
+   min-width:300px;
+
+  width:400px; 
+  
+   }
+   
+   .form-title {
+  /*  margin-bottom:1px; */
+   color: #212121;                /* 아이디, 비밀번호 글자 색상 */
+   }
+.form-field {
+   border: 1px solid #8C8C8C;       /* 아이디, 비밀번호박스의 테두리 */
+   background: #BDBDBD;             /* 아이디, 비밀번호박스의 색상 */
+   
+   border-radius: 4px;
+   color: #212121;               /* 마우스 커서의 색상 */
+   
+   padding:20px;                 /* 아이디글자와 아이디박스 사이 폭 */   
+   margin-bottom:5px;          /* 비밀번호박스와 아이디박스 사이 폭 */      
+   width:358px;                   /* 아이디, 비밀번호박스의 가로 폭 */         
+   
+   }
+.form-field:focus {            
+   background: #fff;           /* 아이디, 비밀번호 입력하려고 클릭했을때 배경 - 흰색 */ 
+   color: #212121;            /* 아이디, 비밀번호 입력될때 글자 색상 - 검정 */ 
+   }
+.form-container h2 {
+   text-shadow: #fdf2e4 0 1px 0;
+   font-size:18px;
+   margin: 0 0 10px 0;
+   font-weight:bold;
+   text-align:center;
+    }
+
+.submit-container {
+  margin-top:10px ;         /* 로그인박스와 비밀번호박스의 간격 */
+  text-align:right;
+   
+   }
+	.submit-button {            
+	width:100%;           /* 로그인박스의 가로 폭 */
+	height:60px;			/* 로그인박스의 세로 폭 */
+	   border: 1px solid #8C8C8C;    /* 로그인박스 테두리 색상 */
+	   background: #BDBDBD;          /* 로그인박스 배경색 */
+	   border-radius: 4px;
+	  
+	   color: #212121;
+	   font-family: '고딕' ;
+	   /* padding: 8.5px 18px; */
+	   font-size: 18px;              /* 로그인 글자 크기 */
+	  
+	   }
+	input:hover {
+	   border: 1px solid #D5D5D5;
+	   background: hsla(120,0%,0%,0.6);    /* 마우스 호버 시 배경 회색 */
+	   color: #fff;          /* 마우스 호버 시 글씨 색상 흰색 */
+	   }
+	input:active {
+	   border: 1px solid #D5D5D5;
+	   background: #212121;         /* 마우스 클릭 시 배경 검정 */
+	   color: #fff;           /* 마우스 클릭 시 글씨 색상 흰색 */
+	   }
+		p  {  /* 아이디찾기, 비밀번호찾기, 회원가입 센터 */
+			align:center;
+			 }
+	 
+	a:hover, a:focus, a:visited, a:link {    /* 아이디찾기, 비밀번호찾기, 회원가입 센터 액션별로*/ 
+	text-decoration: none;
+	color: white;
+}
+</style>
+
+</head>
+<body>
+
+		<div id="wrapper">
+				<header>
+						<jsp:include page="header.jsp"></jsp:include>
+				</header>
+					<article>
+						<section>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+							<form action="login.do" method="post" class="form-container">
+							
+								<c:if test="${errors.idOrPwNotMatch}">
+									아이디와 비밀번호가 일치하지 않습니다.
+								</c:if>
+								
+									<div class="form-title"></div>
+									<input type="text" name="m_id" value="${param.m_id}" class="form-field"
+									placeholder="아이디">
+									<c:if test="${errors.m_id}">ID를 입력하세요.</c:if>
+								<br />
+								
+									<div class="form-title"></div>
+									<input type="password" name="m_pw" class="form-field"
+									placeholder="비밀번호">
+									<c:if test="${errors.m_pw}">비밀번호를 입력하세요.</c:if>
+								<br />
+								<div class="submit-container">
+								<input type="submit" value="로그인" class="submit-button"></div>
+							</form>
+							
+							<p align="center"  >
+								<a href="searchId.do">[아이디 찾기]</a> 
+								<a href="searchPw.do">[비밀번호찾기]</a> 
+								<a href="sym.jsp">[회원가입]</a>
+							<p>
+							
+						</section>
+					</article>
+
+					<footer>
+						<jsp:include page="footer.jsp"></jsp:include>
+					</footer>
+				</div>
+
+</body>
+</html>
