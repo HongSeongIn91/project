@@ -1,0 +1,59 @@
+* JSP
+   [무비로그 리스트]
+     - listReview.jsp
+
+   [검색 리스트]
+     - listSearchReview.jsp
+
+   [검색한 글 보기]
+     - readSearchReview.jsp
+
+   [글 보기, 댓글 보기, 댓글 쓰기]
+     - readReview.jsp
+
+   [글 수정]
+     - modifyForm.jsp
+     - modifySuccess.jsp
+
+   [글 삭제] <- jsp 페이지 없애기로 했음
+     - deleteSuccess.jsp
+
+   [댓글 수정]
+     - modifyReplyForm.jsp
+
+   [글 쓰기]
+     - newReviewForm.jsp
+
+
+
+
+
+* CSS
+   [무비로그 리스트]
+     - listReview.css
+
+   [무비로그 검색 리스트]
+     - listSearchReview.css
+
+   [검색한 글 보기]
+     - css/readReview.css
+
+ [글 보기, 댓글 보기, 댓글 쓰기]
+     - readReview.css
+
+   [글 수정]
+     - writeReview.css
+     - editSuccess.css
+
+   [글 삭제] <- 없애기로 했음
+     - editSuccess.css
+
+   [댓글 수정]
+     - modifyReply.css
+     
+   [글 쓰기]
+     - writeReview.css
+
+
+
+
