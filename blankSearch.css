@@ -1,0 +1,69 @@
+@charset "EUC-KR";
+
+.box1{
+	    background-color: white;
+    vertical-align: middle;
+    white-space: nowrap;
+    position: relative;
+    width: 500px;
+    height: 30px;
+    text-align: center;
+    margin: auto;
+    padding: 0 3px 0 3px;
+    border-radius: 6px;
+}
+
+
+.searchBox {
+	text-align: center;
+	position: relative;
+	margin-top: 15px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	z-index: 10000;
+}
+
+.searchBox select {
+	padding: 2px 0 2px 0;
+	height: 25px;
+	border: none;
+	outline: none;
+	vertical-align: top;
+	margin-top: 2px;
+}
+
+
+
+.searchBox .suggest {
+	margin-top: 2px;
+    width: 340px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    line-height: 24px;
+    outline: 0;
+    -webkit-appearance: none;
+    background-color: transparent;
+    vertical-align: text-bottom;
+    color: black;
+}
+
+
+input.searchBtn {
+	    position: relative;
+    vertical-align: top;
+    left: -9px;
+    top: -1px;
+    width: 26px;
+    height: 30px;
+    margin: 1px;
+    margin: 1px;
+    line-height: 44px;
+    background-position: -40px -231px;
+}
+
+div .message {
+	margin-top: 50px;
+	text-align: center;
+	color: white;
+	line-height: 1.3;
+}
