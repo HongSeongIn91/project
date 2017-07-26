@@ -1,0 +1,299 @@
+@CHARSET "UTF-8";
+
+.article1{
+	border:0.1px solid white;
+	margin-top:50px;
+}
+
+.article2{
+	margin-top:50px;
+	background-color:black;
+}
+
+.article3{			/* 로그인시에만 */
+	margin-top:50px;
+	background-image : url('../images/background.jpg');
+}
+
+
+.poster{
+	/* border:3px solid red; */
+	margin:50px 50px 50px 450px;
+	width:260px;
+	height:370px;	
+}
+
+
+.table_main{
+	position:relative;
+	top:-320px;
+	left:720px;
+	width:600px;
+	height:200px;
+	border-collapse: collapse;
+    line-height: 1.5;
+    border-top: 1px solid #ccc;
+    border-left: 5px solid #369;
+  	margin : 20px 40px;	
+}
+
+.table_main th{
+	width: 100px;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+    color: #153d73;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;	
+}
+
+.table_main td{
+	width: 500px;
+    padding: 10px;
+    vertical-align: top;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+
+.table_main tr{
+	width:300px;	
+}
+
+.table_main img{
+	margin:30px;	
+}
+
+.title h1{
+	font-size:1.5em;
+}
+
+
+.title {
+	position: relative;
+    top: -400px;
+    left: 100px;
+	height:50px;	
+	text-align:center;
+	/* width는 .table_main tr에서 300으로 고정 */
+	margin: 0 70px;
+}
+
+.movie_summary{
+	/* border:1px solid green; */
+	position:relative;
+	top:-200px;
+	margin: 0 300px;
+	padding: 10px;
+/* 	width:800px;
+	height:200px; */
+	line-height:2em;
+}
+
+.movie_summary h2{
+	font-size:1em;
+	font-weight: bold;
+}
+
+
+.table_preview{
+	width: 100%;
+	margin:150px 0 0 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: none;
+    border-bottom:5px solid #000;
+    color:#FFF;
+}
+
+.previewlist{
+	height: 60px;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 52px;
+    border-bottom: 5px solid #000;
+    -webkit-border-radius: 8px 8px 0 0;
+    -moz-border-radius: 8px 8px 0 0;
+    border-radius: 8px 8px 0 0;
+    background: #EA653E;
+    color:#282828;
+    letter-spacing:6px;
+}
+
+/* .previewlist:before {
+    content: '';
+    display: block;
+    height: 8px;
+    -webkit-border-radius: 8px 8px 0 0;
+    -moz-border-radius: 8px 8px 0 0;
+    border-radius: 8px 8px 0 0;
+    background-color: #000;
+    margin:0;
+} */
+
+.pre_content{
+	width:1000px;
+	padding: 0 10px 0 25px;
+	margin:10px 90px 10px 0; 
+}
+
+.pre_member{
+	width:150px;
+	margin:20px 0 0 200px;
+}
+
+
+
+
+.pNo{
+	margin:30px 0 0 10px;
+	text-size:1em;
+	text-align:center;
+	height:15px; 
+}
+
+.pNo a{
+	font-size:1em;
+	color:white;
+	font-weight: bold;
+	text-decoration:none;	 
+}
+
+.pNo a:hover{
+	font-size:1em;
+	color:white;
+	font-weight: bold;
+	text-decoration:underline;	 
+}
+
+/*기대평 게시판 사이사이에 border-top: 1px dashed #d5d5d5;넣기*/
+
+.table_write{
+	width:100%;
+	/* padding: 0 20px 0 470px; */
+}
+
+/* .submit_button{
+	width:490px;
+	float:right;
+} */
+
+
+.minilist{
+	margin-right:15%;
+    margin-left:15%;
+    height:30px;
+    border-bottom:1px solid white;
+    padding:10px;
+}
+
+.minilist a {
+	text-align:center;
+	color:white;
+	font-size:1.5em;
+	margin:60px;
+	text-decoration:none;	
+}
+
+.minilist a:hover{
+	border:2px solid #102A5D;
+	background-color:#102A5D;
+	text-align:center;
+	color:white;
+	text-decoration:underline;		
+}
+
+
+
+.rpWrite {
+	clear: both;
+	zoom: 1;
+	position: relative;
+	z-index: 15;
+}
+
+.rpWrite table {
+	position: relative;
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+
+.rpWrite td {
+	padding: 0;
+	vertical-align: middle;
+}
+
+.reply_wrap {
+	position: relative;
+	zoom: 1;
+	padding-top: 20px;
+	margin: 0;
+}
+
+.reply_input{
+	text-align: center;
+}
+
+.reply_input textarea {
+	resize: none;
+	margin: 0;
+	padding: 5px 5px;
+	width: 800px;
+	height: 39px;
+	border: 0 none;
+	background-color: rgba(255,255,255,0.9);
+	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
+	line-height: normal;
+	font-size: 12px;
+	outline: 0 none;
+}
+
+.submit {
+	vertical-align: top;
+    width: 50px;
+    height: 50px;
+}
+
+
+.bar {
+	 font-family: '돋움',dotum,Helvetica,sans-serif;
+	 color: #666666;
+}
+
+
+.rp_edit {
+	position:relative;
+	left:-200px;
+	top:0;
+	font-size: 90%;
+	color: #3B4860;
+	padding:20px;
+	
+}
+
+.rp_edit a {
+	color: #F7FAFD;
+	text-decoration:none;
+}
+
+.rp_edit2{
+		position:relative;
+	top: -75px;
+	left:450px;
+}
+
+.submit {
+	position:relative;
+	left:15px;
+	top:-22px;
+	vertical-align: top;
+    width: 50px;
+    height: 47px;
+}
+
+
