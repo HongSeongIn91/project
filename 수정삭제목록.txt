@@ -1,0 +1,21 @@
+<div class="rv_edit">
+										<c:if test="${authUser.id == searchReviewData.review.rv_m_id }">
+											<span> <a
+												href="reviewmodify.do?rv_num=${searchReviewData.review.rv_num }&pageNo=${pageNo }&reviewSort=${reviewSort} }">수정
+											</a>
+											</span>
+											<span class="bar">|</span>
+											<span> 
+											<a
+												href="reviewdelete.do?rv_num=${searchReviewData.review.rv_num }&pageNo=${pageNo }&reviewSort=${reviewSort} }">삭제
+											</a>
+											</span>
+											<span class="bar">|</span>
+											<span>
+												<c:set var="pageNo" value="${empty param.pageNo ? '1' : param.pageNo }"></c:set> 
+													<a
+														href="reviewsearch.do?pageNo=${pageNo }&keyField=${keyField}&keyWord=${keyWord}&reviewSort=${reviewSort}">목록
+													</a>
+											</span>
+										</c:if>
+									</div>
